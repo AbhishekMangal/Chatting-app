@@ -5,7 +5,12 @@ const app = express();
 const socket = require("socket.io");
 
 app.use(express.json());
-app.use(cors());
+app.use(cors(
+{
+  origin: "https://chatting-app-11.onrender.com",
+  credentials: true,
+}
+));
 const httpServer = require('http').createServer(app);
 
 
