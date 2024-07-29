@@ -6,11 +6,13 @@ const { Server } = require("socket.io");
 
 const app = express();
 app.use(express.json());
-app.use(cors({
-  origin: "https://chatting-app-11.onrender.com",
+app.use(cors(
+  {
+  origin: "http://localhost:3000",
   methods: ["GET", "POST"],
   credentials: true,
-}));
+}
+));
 
 const httpServer = http.createServer(app);
 
