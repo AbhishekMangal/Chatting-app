@@ -73,7 +73,7 @@ const ChatContainer = ({
     }
   });
   useEffect(() => {
-    if (arrivalMessage) {
+    if (arrivalMessage && currChat && arrivalMessage.from === currChat._id) {
       setMessage((prev) => [...prev, arrivalMessage]);
       setLength((prev) => [...prev, length + 1]);
       if(currChat)
