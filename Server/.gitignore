@@ -1,0 +1,19 @@
+# Node modules
+node_modules
+.env
+# Build artifacts
+build
+dist
+
+# Logs and cache
+logs
+*.log
+cache
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# Editor-specific files
+*.swp
+*.DS_Store
