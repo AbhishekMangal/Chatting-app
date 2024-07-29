@@ -65,7 +65,7 @@ const ChatContainer = ({
 
       socket.current.on("msg-recieve", (data) => {
         if(data.from == currChat._id){
-        setArrivalMessage({ fromSelf: false, message: data.msg, length: data.length });
+        setArrivalMessage({ fromSelf: false, message: data.message, length: data.length });
         }
       
       
