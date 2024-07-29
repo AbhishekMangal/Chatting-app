@@ -16,6 +16,8 @@ const Contacts = ({ contacts, currUser, changeChat, length, setLength, notificat
   }, [currUser]);
 
   const changeCurrentChat = (index, contact) => {
+    setNotification((prevNotifications) => 
+      prevNotifications.filter((notif) => notif.from !== contact._id))
     setcurrSelected(index);
     changeChat(contact, index);
 
