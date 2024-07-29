@@ -60,9 +60,9 @@ const Chat = () => {
 
   const handleChatchange = (chat, index) => {
     setCurrentChat(chat);
-    console.log(chat);
-
-    // Clear notifications for the selected chat
+    
+    setcurrSelected(index);
+   console.log(currentChat);
     setNotifications((prevNotifications) =>
       prevNotifications.filter((notif) => notif.from !== chat._id)
   );

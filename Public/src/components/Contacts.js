@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
-
+import userContext from '../Context/userContext';
 import Logo from '../Assets/logo.svg';
 
 const Contacts = ({ contacts, currUser, changeChat, length, setLength, notifications , setNotification}) => {
@@ -9,7 +9,7 @@ const Contacts = ({ contacts, currUser, changeChat, length, setLength, notificat
   const [currSelected, setcurrSelected] = useState(undefined);
 
   useEffect(() => {
-    if (currUser) {
+    if (currUser ) {
       setCurrUserName(currUser.username);
       setCurrentImage(currUser.avtarImage);
     }
@@ -35,7 +35,12 @@ const Contacts = ({ contacts, currUser, changeChat, length, setLength, notificat
           <div className="contacts">
             {contacts &&
               contacts.map((contact, index) => {
-            
+              //  if(index === currSelected)
+              //  {
+              //   // console.log(5);
+              //   const Notfication = notifications.filter((notif)=> notif.from !== contact._id);
+              //   setNotification(Notfication);
+              //  }
                 const unreadMessages = notifications.filter(
                   (notif) => notif.from === contact._id
                 ).length;
