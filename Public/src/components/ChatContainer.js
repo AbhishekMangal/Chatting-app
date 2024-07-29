@@ -42,7 +42,7 @@ const ChatContainer = ({
 
   const handleSendMsz = async (msg) => {
   
-    setNotifications(notifications.filter((notif)=> notif.from !== currChat._id))
+    
     socket.current.emit("send-msg", {
       to: currChat._id,
       from: currUser._id,
@@ -62,9 +62,11 @@ const ChatContainer = ({
 
   useEffect(() => {
     if (socket.current) {
-      socket.current.on("msg-recieve", (msg) => {
-      
-        setArrivalMessage({ fromSelf: false, message: msg, length: length });
+
+      socket.current.on("msg-recieve", (data) => {
+        if(data.from == currChat){
+        setArrivalMessage({ fromSelf: false, message: data.msg, length: data.length });
+        }
       
       
       });
