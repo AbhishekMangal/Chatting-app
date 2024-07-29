@@ -15,7 +15,7 @@ app.use('/api/auth', require('./Routes/userRoutes'))
 app.use('/api/message', require('./Routes/messagesRoute'))
 app.use('/api/friend', require('./Routes/FriendsRoute'))
 
-app.use('/api/request', require('./Routes/request'))
+app.use('/api/request', require('./Routes/Request'))
 // app.get('/',async(req, res)=>
 // {
 //     await res.send("Home page")
