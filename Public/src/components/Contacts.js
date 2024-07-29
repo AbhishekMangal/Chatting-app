@@ -49,7 +49,7 @@ const Contacts = ({ contacts, currUser, changeChat, length, setLength, notificat
                     </div>
                     <div className="username">
                       <h3>{contact.username}</h3>
-                      <h5>{length[index]}</h5>
+                    
                     </div>
                     {unreadMessages > 0   && (
                       <div className="notification">
