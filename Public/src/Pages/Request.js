@@ -24,7 +24,7 @@ const Request = () => {
 
       if (storedUser && storedUser._id) {
         try {
-          const response = await axios.get(`http://localhost:5000/api/request/getRequest/${storedUser._id}`);
+          const response = await axios.get(`https://chatting-app-7-70a8.onrender.com/api/request/getRequest/${storedUser._id}`);
           if (response.data.success) {
             setRequest(response.data.req);
             console.log(response)
