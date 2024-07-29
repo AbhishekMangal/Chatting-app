@@ -64,14 +64,15 @@ const ChatContainer = ({
     if (socket.current) {
 
       socket.current.on("msg-recieve", (data) => {
-        if(data.from == currChat._id){
+        
         setArrivalMessage({ fromSelf: false, message: data.message, length: data.length });
-        }
+        
       
       
       });
     }
-  });
+    setMessage([]);
+  }, [currChat]);
   useEffect(() => {
     if (arrivalMessage && currChat && arrivalMessage.from === currChat._id) {
       setMessage((prev) => [...prev, arrivalMessage]);
@@ -80,8 +81,7 @@ const ChatContainer = ({
         {
           
           setNotifications(notifications.filter((notif)=> notif.from !== currChat._id))
-          console.log(notifications.length)
-          console.log(notifications)
+        
         }
     }
   }, [arrivalMessage]);

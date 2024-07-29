@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import userContext from '../Context/userContext';
+
 import Logo from '../Assets/logo.svg';
 
 const Contacts = ({ contacts, currUser, changeChat, length, setLength, notifications , setNotification}) => {
@@ -35,7 +35,7 @@ const Contacts = ({ contacts, currUser, changeChat, length, setLength, notificat
           <div className="contacts">
             {contacts &&
               contacts.map((contact, index) => {
-                console.log(contact.avtarImage)
+            
                 const unreadMessages = notifications.filter(
                   (notif) => notif.from === contact._id
                 ).length;
