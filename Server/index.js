@@ -26,7 +26,7 @@ const server = app.listen(port, () => {
 connectToMongo();
 const io =  socket(server, {
   cors:{
-    origin:"http://localhost:3000",
+    origin:"https://chatting-app-11.onrender.com/",
   
     Credential: true,
 
