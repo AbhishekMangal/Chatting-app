@@ -6,9 +6,10 @@ const { Server } = require("socket.io");
 
 const app = express();
 app.use(express.json());
+const client = process.env.client 
 app.use(cors(
   {
-  origin: "https://chatting-app-11.onrender.com",
+  origin: client,
   methods: ["GET", "POST"],
   credentials: true,
 }
@@ -31,7 +32,6 @@ const server = httpServer.listen(port, () => {
 const userName = process.env.Name
 const password = process.env.password
 
-const client = process.env.client
 
 connectToMongo(userName, password);
 const io = new Server(server, {
