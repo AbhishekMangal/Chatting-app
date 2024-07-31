@@ -6,7 +6,7 @@ const { Server } = require("socket.io");
 
 const app = express();
 app.use(express.json());
-const client = process.env.client 
+const client = process.env.client || "https://chatting-app-11.onrender.com/"
 app.use(cors(
   {
   origin: client,
