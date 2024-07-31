@@ -28,11 +28,15 @@ const server = httpServer.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
 
-connectToMongo();
+const userName = process.env.Name
+const password = process.env.password
 
+const client = process.env.client
+
+connectToMongo(userName, password);
 const io = new Server(server, {
   cors: {
-    origin: "https://chatting-app-11.onrender.com",
+    origin: client,
     methods: ["GET", "POST"],
     credentials: true,
   },
