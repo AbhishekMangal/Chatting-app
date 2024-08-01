@@ -36,6 +36,7 @@ connectToMongo(userName, password);
 const io = new Server(server, {
   cors: {
     origin: "https://chatting-app-11.onrender.com",
+    // origin: "http://localhost:3000/",
     methods: ["GET", "POST"],
     credentials: true,
   },

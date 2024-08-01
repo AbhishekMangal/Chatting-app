@@ -23,7 +23,8 @@ const Chat = () => {
 
   const getUsers = async () => {
     const response = await getuser();
-    if (response.data.User.isAvtarImage) {
+    console.log(response)
+    if (response && response.data.User.isAvtarImage) {
       const response = await axios.get(allUserRoute, {
         headers: {
           "auth-token": localStorage.getItem("authToken"),
