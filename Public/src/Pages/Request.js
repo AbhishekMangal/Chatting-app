@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 
 import Card from '../components/Card';
 import userContext from '../Context/userContext';
+import { host } from '../util/ApiRoute';
 
 const Request = () => {
   const context = useContext(userContext);
@@ -24,7 +25,7 @@ const Request = () => {
 
       if (storedUser && storedUser._id) {
         try {
-          const response = await axios.get(`http://localhost:3000//api/request/getRequest/${storedUser._id}`);
+          const response = await axios.get(`${host}//api/request/getRequest/${storedUser._id}`);
           if (response.data.success) {
             setRequest(response.data.req);
             console.log(response)
