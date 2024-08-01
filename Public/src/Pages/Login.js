@@ -12,15 +12,9 @@ import userContext from '../Context/userContext';
 const Login = () => {
     const context = useContext(userContext);
     const {user, setUser} = context;
-    const [playSound] = useSound('sound.mp3')
-    
-//   useEffect(()=>
-//   {
-//     if(localStorage.getItem("authToken"))
-//     {
-//       navigate('/pageNotFound');
-//     }
-//   }, [localStorage.getItem("authToken")])
+
+
+
     const navigate = useNavigate();
     const [values,setValues] = useState({email: "", password: ""})
     const toastOption = {
