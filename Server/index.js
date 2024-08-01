@@ -9,8 +9,9 @@ app.use(express.json());
 app.use(cors(
   {
   origin: "https://chatting-app-11.onrender.com",
-  methods: ["GET", "POST"],
-  credentials: true,
+// origin: "http://localhost:3000/",
+methods: ["GET", "POST"],
+credentials: true,
 }
 ));
 
