@@ -89,7 +89,7 @@ const Chat = () => {
   return (
     <Container>
       
-      <div className="  w-full grid sm:grid-cols-[40%_60%] xl:grid-cols-[25%_75%] w-full bg-[#00000076] m-8 overflow-hidden">
+      <div className="h-full  w-full grid sm:grid-cols-[40%_60%] xl:grid-cols-[25%_75%] w-full bg-[#00000076] m-8 overflow-hidden">
         {userDetails === true ?  (
           <UserPage/>
 
