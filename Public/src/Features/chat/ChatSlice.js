@@ -7,6 +7,7 @@ const initialState = {
     notifications: [],
     currSelected: undefined,
     currChatDetails: false,
+   
 }
 
 const ChatSlice = createSlice({
@@ -27,7 +28,8 @@ const ChatSlice = createSlice({
         },
         setCurrChatDetails(state, action){
             state.currChatDetails = action.payload
-        }
+        },
+       
     }
 });
 export const {

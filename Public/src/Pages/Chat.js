@@ -21,7 +21,7 @@ const Chat = () => {
   const [notifications, setNotifications] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const{contact, currentChat, currChatDetails} = useSelector(state => state.chat);
+  const{ currentChat, currChatDetails, currSelected} = useSelector(state => state.chat);
   const{userDetails} = useSelector(state => state.user);
 
   const{user} = useSelector(state => state.user)
@@ -89,17 +89,26 @@ const Chat = () => {
   return (
     <Container>
       
-      <div className=" h-screen max-w-full grid grid-cols-[40%_60%] xl:grid-cols-[25%_75%] w-full bg-[#00000076]">
+      <div className=" h-full max-w-full grid sm:grid-cols-[40%_60%] xl:grid-cols-[25%_75%] w-full bg-[#00000076]">
         {userDetails === true ?  (
           <UserPage/>
 
         ):(
-        <Contacts  changeChat={handleChatchange} notifications={notifications} setNotification={setNotifications}/>
+          <div className={`${currSelected!== undefined ? 'hidden': 'contents'} sm:contents h-screen bg-[#000223]`}>
+        <Contacts  changeChat={handleChatchange} notifications={notifications} setNotification={setNotifications} />
+        </div>
         )
         }
         {isLoaded && !currentChat ? (
+          <div className="hidden sm:contents">
           <Welcome/>
-        ) : currChatDetails ?(<Profile/>) : ( <ChatContainer socket={socket} notifications={notifications} setNotifications={setNotifications}/>  )}
+          </div>
+        ) : currChatDetails ?(<Profile/>) : (
+          
+           <div className={`${currSelected !== undefined? 'contents':'hidden'} sm:contents`}> 
+           <ChatContainer socket={socket} notifications={notifications} setNotifications={setNotifications} handleChatchange={handleChatchange}/> 
+             </div>
+            )}
       </div>
     </Container>
   );

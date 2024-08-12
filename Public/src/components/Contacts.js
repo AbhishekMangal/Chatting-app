@@ -5,17 +5,17 @@ import Logo from '../Assets/logo.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import { BiPowerOff } from 'react-icons/bi';
 import LogOut from './LogOut';
-import { setContact, setCurrChatDetails, setCurrentChat, setNotifications } from '../Features/chat/ChatSlice';
+import { setContact, setCurrChatDetails, setCurrentChat, setcurrSelected, setNotifications } from '../Features/chat/ChatSlice';
 import { setUser, setUserDetails } from '../Features/user/userSlice';
 import { useNavigate } from 'react-router-dom';
 import DropDown from './DropDown';
 
 const Contacts = ({ changeChat, notifications , setNotification}) => {
-  const{contact} = useSelector(state => state.chat)
+  const{contact, currSelected} = useSelector(state => state.chat)
   const {user} = useSelector(state=> state.user)
   const [currUserName, setCurrUserName] = useState(undefined);
   const [currentUserImage, setCurrentImage] = useState({});
-  const [currSelected, setcurrSelected] = useState(undefined);
+
  
 const navigate = useNavigate();
 const dispatch = useDispatch();
@@ -30,7 +30,7 @@ const dispatch = useDispatch();
     
     setNotification((prevNotifications) => 
       prevNotifications.filter((notif) => notif.from !== contact._id))
-    setcurrSelected(index);
+    dispatch(setcurrSelected(index));
     dispatch(setCurrentChat(contact))
     dispatch(setCurrChatDetails(false))
     console.log(contact)
@@ -44,7 +44,7 @@ const dispatch = useDispatch();
     <>
     
     <Container >
-      <div className='grid grid-rows-[auto_1fr] bg-[#080420] overflow-hidden min-h-full'>
+      <div className='grid grid-rows-[auto_1fr] bg-[#080420] overflow-hidden h-screen'>
       {currentUserImage  && (
           <div className="header flex justify-between items-center p-4  border-b-2 border-solid border-[#022c7a]">
             <div className='logo h-8 '>
