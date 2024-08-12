@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom'
 import {BiPowerOff} from 'react-icons/bi';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
-import { setUser } from '../Features/user/userSlice';
+import { setUser, setUserDetails } from '../Features/user/userSlice';
 import { MdOutlineAutoDelete } from "react-icons/md";
 
-import { setContact, setCurrentChat, setcurrSelected, setNotifications } from '../Features/chat/ChatSlice';
+import { setContact, setCurrChatDetails, setCurrentChat, setcurrSelected, setNotifications } from '../Features/chat/ChatSlice';
 const LogOut = () => {
   const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -18,7 +18,8 @@ const LogOut = () => {
       dispatch((setContact([])));
       dispatch(setcurrSelected(undefined));
         localStorage.clear();
-        
+      dispatch(setUserDetails(false));
+      dispatch(setCurrChatDetails(false))
         navigate('/login');
     }
   return (

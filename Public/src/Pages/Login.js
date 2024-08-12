@@ -7,10 +7,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { loginRoute } from '../util/ApiRoute';
 import userContext from '../Context/userContext';
+import { setUser } from '../Features/user/userSlice';
+import { useDispatch } from 'react-redux';
 
 const Login = () => {
     const context = useContext(userContext);
   
+const dispatch = useDispatch();
 
 
 
@@ -40,6 +43,7 @@ const Login = () => {
                     localStorage.setItem('authToken', data.data.authToken)
                    
                     localStorage.setItem('chat-app-user', JSON.stringify(data.data.User));
+                    dispatch(setUser(data.data.User))
                 
                  
                     navigate('/')

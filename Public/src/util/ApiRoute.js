@@ -1,11 +1,13 @@
-export const host ="https://chatting-app-7-70a8.onrender.com"
-// export const host ="http://localhost:5000"
+// export const host ="https://chatting-app-7-70a8.onrender.com"
+export const host ="http://localhost:5000"
 export const registerRoute = `${host}/api/auth/register`
 export const loginRoute = `${host}/api/auth/login`
 export const setAvtarRoute = `${host}/api/auth/setAvtar`
 export const getuserRouter = `${host}/api/auth/getUser`
 export const allUserRoute = `${host}/api/auth/allusers`;
-export const sendMessageRoute = `${host}/api/message/addmsg`;
 export const getAllMessageRoute = `${host}/api/message/getmsg`
 export const otpSender = `${host}/api/auth/sendMail`
 export const getRequest = `${host}/api/request/getRequest`
+export const sendMessageRoute = `${host}/api/message/addmsg`;
+export const blockUser = `${host}/api/message/block`;
+export const unBlockUser = `${host}/api/message/unblock`;

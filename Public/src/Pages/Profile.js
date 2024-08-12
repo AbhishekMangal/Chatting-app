@@ -3,6 +3,7 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setCurrChatDetails } from '../Features/chat/ChatSlice'
 import { GoArrowLeft } from 'react-icons/go'
+import { setUserDetails } from '../Features/user/userSlice'
 
 const Profile = () => {
     const {currentChat, currChatDetails} = useSelector(state =>state.chat)

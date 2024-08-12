@@ -7,14 +7,18 @@ const messageSchema = new mongoose.Schema({
             require: true,
         },
     },
-        users: Array,
-        sender :{
+    users: Array,
+    sender :{
             type: mongoose.Schema.Types.ObjectId,
             ref: "user",
             required: true,
-        },
     },
-
+    canSend :{
+        type : Boolean,
+        default: true,
+    }
+    },
+    
     {
     timestamps: true,
     }

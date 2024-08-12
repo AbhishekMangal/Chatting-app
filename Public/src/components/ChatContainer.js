@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import LogOut from "./LogOut";
 import ChatInput from "./ChatInput";
-import { getAllMessageRoute, sendMessageRoute } from "../util/ApiRoute";
+import { blockUser, getAllMessageRoute, sendMessageRoute, unBlockUser } from "../util/ApiRoute";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setCurrChatDetails, setCurrentChat } from "../Features/chat/ChatSlice";
 import { GoArrowLeft } from "react-icons/go";
+import { MdBlockFlipped } from "react-icons/md";
 
 const ChatContainer = ({
   socket,
@@ -19,6 +20,7 @@ const ChatContainer = ({
   const { user } = useSelector((state) => state.user);
   const [messages, setMessage] = useState([]);
   const [arrivalMessage, setArrivalMessage] = useState(null);
+  const [isBlocked, setIsBlocked] = useState(false);
   const scrollRef = useRef();
 
   const dispatch = useDispatch();
@@ -35,6 +37,16 @@ const ChatContainer = ({
         to: currentChat._id,
       });
       setMessage(response.data);
+      console.log(response.data)
+      const lastmess = response.data[response.data.length -1];
+      if(lastmess.canSend === false)
+      {
+        setIsBlocked(true);
+      }
+      else
+      {
+        setIsBlocked(false)
+      }
     }
   };
 
@@ -53,6 +65,32 @@ const ChatContainer = ({
     msgs.push({ fromSelf: true, message: msg });
     setMessage(msgs);
   };
+  const handleBlock = async (msg)=>
+  {
+    if(isBlocked)
+    {
+      const response = await axios.post(unBlockUser, {
+        from: user._id,
+        to: currentChat._id,
+      })
+      if(response.data.success)
+      {
+        setIsBlocked(false);
+      }
+    }
+    else
+    {
+      const response = await axios.post(blockUser, {
+        from: user._id,
+        to: currentChat._id,
+      })
+      console.log(response.data)
+      if(response.data.success)
+      {
+        setIsBlocked(true);
+      }
+    }
+  }
 
   useEffect(() => {
     if (socket.current) {
@@ -89,26 +127,19 @@ const ChatContainer = ({
     <>
       {currentChat && (
         <div className="grid  grid-rows-[20%,70%,10%] gap-[0.1rem] overflow-hidden">
-          <div
-            className="flex justify-between items-center px-8 "
-            
-          >
+          <div className="flex justify-between items-center px-8 ">
             <div className="flex items-center gap-4 cursor-pointer" onClick={() => dispatch(setCurrChatDetails(true))}>
-              <GoArrowLeft
-                className="text-2xl mx-5 text-white sm:hidden"
-                onClick={() => handleChatchange(null, undefined)}
-              />
+              <GoArrowLeft className="text-2xl mx-5 text-white sm:hidden" onClick={() => handleChatchange(null, undefined)} />
               <div className="avatar">
-                <img
-                  src={`data:image/svg+xml;base64,${currentChat.avtarImage}`}
-                  alt="avatar"
-                  className="h-8"
-                />
+                <img src={`data:image/svg+xml;base64,${currentChat.avtarImage}`} alt="avatar" className="h-8"/>
               </div>
               <div className="username">
                 <h3 className="text-white">{currentChat.username}</h3>
               </div>
+              <div>
+              </div>
             </div>
+              <MdBlockFlipped className={`text-2xl mx-5 ${isBlocked? "text-red-500": "text-white"} cursor-pointer`} onClick={handleBlock}/>
           </div>
           <div className="chat-messages flex flex-col gap-4 p-4 overflow-auto ">
             {messages.map((message) => {
@@ -129,9 +160,16 @@ const ChatContainer = ({
               );
             })}
           </div>
-          <div className="chat-input">
+          {!isBlocked? (
+          <div className={`chat-input `}>
             <ChatInput handleSendMsz={handleSendMsz} />
           </div>
+          ): 
+          <h1 className="text-center text-white pt-3">
+            Blocked Chat!!
+          </h1>
+
+         }
         </div>
       )}
     </>
