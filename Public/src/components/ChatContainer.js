@@ -88,7 +88,7 @@ const ChatContainer = ({
   return (
     <>
       {currentChat && (
-        <div className="grid :grid-rows-[10%,80%,10%] md:grid-rows-[15%,70%,15%] gap-[0.1rem] overflow-hidden">
+        <div className="grid  grid-rows-[20%,70%,10%] gap-[0.1rem] overflow-hidden">
           <div
             className="flex justify-between items-center px-8 "
             
@@ -102,7 +102,7 @@ const ChatContainer = ({
                 <img
                   src={`data:image/svg+xml;base64,${currentChat.avtarImage}`}
                   alt="avatar"
-                  className="h-12"
+                  className="h-8"
                 />
               </div>
               <div className="username">

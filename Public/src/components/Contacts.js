@@ -8,7 +8,7 @@ import LogOut from './LogOut';
 import { setContact, setCurrChatDetails, setCurrentChat, setcurrSelected, setNotifications } from '../Features/chat/ChatSlice';
 import { setUser, setUserDetails } from '../Features/user/userSlice';
 import { useNavigate } from 'react-router-dom';
-import DropDown from './DropDown';
+
 
 const Contacts = ({ changeChat, notifications , setNotification}) => {
   const{contact, currSelected} = useSelector(state => state.chat)
@@ -44,7 +44,7 @@ const dispatch = useDispatch();
     <>
     
     <Container >
-      <div className='grid grid-rows-[auto_1fr] bg-[#080420] overflow-hidden '>
+      <div className='grid grid-rows-[20%,80%] bg-[#080420] overflow-hidden h-full'>
       {currentUserImage  && (
           <div className="header flex justify-between items-center p-4  ">
             <div className='logo h-8 '>

@@ -89,12 +89,12 @@ const Chat = () => {
   return (
     <Container>
       
-      <div className=" h-[90vh] w-[90vw] grid sm:grid-cols-[35%_65%] xl:grid-cols-[25%_75%] w-full bg-[#00000076] m-4">
+      <div className="  w-full grid sm:grid-cols-[40%_60%] xl:grid-cols-[25%_75%] w-full bg-[#00000076] m-8 overflow-hidden">
         {userDetails === true ?  (
           <UserPage/>
 
         ):(
-          <div className={`${currSelected!== undefined ? 'hidden': 'contents'} sm:contents h-full bg-[#080420] `}>
+          <div className={`${currSelected!== undefined ? 'hidden': 'contents'} sm:contents h-screen bg-[#000223]`}>
         <Contacts  changeChat={handleChatchange} notifications={notifications} setNotification={setNotifications} />
         </div>
         )
