@@ -44,9 +44,9 @@ const dispatch = useDispatch();
     <>
     
     <Container >
-      <div className='grid grid-rows-[auto_1fr] bg-[#080420] overflow-hidden h-screen'>
+      <div className='grid grid-rows-[auto_1fr] bg-[#080420] overflow-hidden '>
       {currentUserImage  && (
-          <div className="header flex justify-between items-center p-4  border-b-2 border-solid border-[#022c7a]">
+          <div className="header flex justify-between items-center p-4  ">
             <div className='logo h-8 '>
             <img src={Logo} alt="" className='h-8' />
             </div>
@@ -101,7 +101,7 @@ const dispatch = useDispatch();
 };
 
 const Container = styled.div`
-  
+  background-color: #000223;
   .contacts {
     display: flex;
     flex-direction: column;
