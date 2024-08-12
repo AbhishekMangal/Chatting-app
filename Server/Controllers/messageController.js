@@ -92,7 +92,12 @@ module.exports.unBlock = async(req, res, next)=>
         const lastMessage = messages[messages.length -1]
         if(lastMessage.canSend=== false && messages[messages.length -1].sender.toString() === from)
         {
-            await MessageModel.deleteOne({canSend: false})
+            await MessageModel.deleteOne({
+                canSend: false,
+                users: {
+                    $all: [from, to]
+                }
+            });
             return res.json({success: true, msz: "Unblocked Successfully" })
         }
         return res.json({success: false ,msz: "You can't perform this action"})

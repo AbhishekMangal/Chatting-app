@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { setCurrChatDetails, setCurrentChat } from "../Features/chat/ChatSlice";
 import { GoArrowLeft } from "react-icons/go";
 import { MdBlockFlipped } from "react-icons/md";
+import { toast, ToastContainer } from "react-toastify";
 
 const ChatContainer = ({
   socket,
@@ -22,7 +23,13 @@ const ChatContainer = ({
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const [isBlocked, setIsBlocked] = useState(false);
   const scrollRef = useRef();
-
+  const toastOption = {
+    position: "bottom-right",
+    autoClose: 8000,
+    pauseOnHover: true,
+    draggable: true,
+    theme:"dark"
+}
   const dispatch = useDispatch();
   useEffect(() => {
     if (user && currentChat) {
@@ -40,7 +47,7 @@ const ChatContainer = ({
       console.log(response.data)
       const lastmess = response.data[response.data.length -1];
       if(lastmess.canSend === false)
-      {
+      {  
         setIsBlocked(true);
       }
       else
@@ -73,9 +80,15 @@ const ChatContainer = ({
         from: user._id,
         to: currentChat._id,
       })
+      console.log(response.data)
       if(response.data.success)
       {
+        toast.success("UnBlocked Successfully", toastOption)
         setIsBlocked(false);
+      }
+      else
+      {
+        toast.error("Action can't be performed", toastOption)
       }
     }
     else
@@ -85,9 +98,14 @@ const ChatContainer = ({
         to: currentChat._id,
       })
       console.log(response.data)
+      
       if(response.data.success)
       {
+        toast.success(response.data.msz, toastOption)
         setIsBlocked(true);
+      }
+      else{
+        toast.error(response.data.msz, toastOption)
       }
     }
   }
@@ -171,7 +189,9 @@ const ChatContainer = ({
 
          }
         </div>
+
       )}
+      <ToastContainer/>
     </>
   );
 };

@@ -39,7 +39,7 @@ const dispatch = useDispatch();
                
                 if(data.data.success)
                 {
-                    toast.success("Registerd SuccessFully", {toastOption})
+                    toast.success("Registerd SuccessFully", toastOption)
                     localStorage.setItem('authToken', data.data.authToken)
                    
                     localStorage.setItem('chat-app-user', JSON.stringify(data.data.User));
