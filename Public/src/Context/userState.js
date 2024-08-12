@@ -2,9 +2,13 @@ import React, { createContext, useState } from 'react'
 import userContext from './userContext';
 import axios from 'axios';
 import { getuserRouter } from '../util/ApiRoute';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUser } from '../Features/user/userSlice';
 
 const UserState = (props) => {
-    const [user, setUser] = useState({});
+  const dispatch = useDispatch();
+  const {user} = useSelector(state => state.user)
+ 
     const [otp ,setOtp] = useState({});
     const getuser =  async()=>{
     const response = await axios.get(getuserRouter, {
@@ -13,7 +17,7 @@ const UserState = (props) => {
       }
     });
     
-    await setUser(response.data.User)
+     dispatch(setUser(response.data.User))
     
 
       return response;
@@ -22,7 +26,7 @@ const UserState = (props) => {
 
   return (
     <div>
-  <userContext.Provider value={{user, setUser, getuser, setOtp, otp}} >{props.children}</userContext.Provider>
+  <userContext.Provider value={{ getuser, setOtp, otp}} >{props.children}</userContext.Provider>
     </div>
   )
 }

@@ -2,7 +2,11 @@
 module.exports = {
   content: ["./src/**/*.{html,js}"],
   theme: {
-    extend: {},
+    extend: {
+      inset:{
+        'calc-100-plus-05rem':'calc(100% + 0.5rem)',
+      }
+    },
   },
   plugins: [],
 }

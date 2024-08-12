@@ -41,16 +41,18 @@ const SetAvtar = () => {
             
                
                 
+            if(user ){
                 const {data} = await axios.post(`${setAvtarRoute}/${user._id}`,{
                     image: avatars[SelectedAvatars],
                 });
-                if(user && data.isSet){
+                if(data.isSet){
                     user.isAvtarImage = true;
                     user.avtarImage = avatars[SelectedAvatars];
                     localStorage.setItem('chat-app-user', JSON.stringify(user));
                     setUser(user);
                     
                     navigate("/");
+                }
                 }
                 else
                 {

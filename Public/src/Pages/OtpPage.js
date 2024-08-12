@@ -1,24 +1,16 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components'
 import Logo from '../Assets/logo.svg'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
-import { loginRoute, otpSender } from '../util/ApiRoute';
+import { otpSender } from '../util/ApiRoute';
 import userContext from '../Context/userContext';
 
 const  OtpPage= () => {
     const context = useContext(userContext);
-    const {user, setUser, otp} = context;
-
-//   useEffect(()=>
-//   {
-//     if(localStorage.getItem("authToken"))
-//     {
-//       navigate('/pageNotFound');
-//     }
-//   }, [localStorage.getItem("authToken")])
+    const {setUser} = context;
     const navigate = useNavigate();
     const [values,setValues] = useState({otp: ""})
     const toastOption = {

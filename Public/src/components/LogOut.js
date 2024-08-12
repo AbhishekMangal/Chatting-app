@@ -2,33 +2,42 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import {BiPowerOff} from 'react-icons/bi';
 import styled from 'styled-components';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../Features/user/userSlice';
+import { MdOutlineAutoDelete } from "react-icons/md";
+
+import { setContact, setCurrentChat, setcurrSelected, setNotifications } from '../Features/chat/ChatSlice';
 const LogOut = () => {
+  const dispatch = useDispatch();
     const navigate = useNavigate();
     const handleClick= async()=>
     {
+      dispatch(setUser(undefined));
+      dispatch(setNotifications([]));
+      dispatch((setCurrentChat(undefined)));
+      dispatch((setContact([])));
+      dispatch(setcurrSelected(undefined));
         localStorage.clear();
+        
         navigate('/login');
     }
   return (
-    <div>
-        <Button onClick={handleClick}>
-      <BiPowerOff/>
-      </Button>
-    </div>
+<>
+              <div className='.logout flex justify-center text-white cursor-pointer hover:bg-[#9a86f3] py-3 rounded-lg gap-2 w-full' onClick={handleClick} >
+              <BiPowerOff className='logout-icon mb-1 text-xl text-[#59dfca]'/>
+                <span>Logout</span> 
+                 </div> 
+                 <div className='.delete flex justify-center text-white cursor-pointer hover:bg-[#9a86f3] py-3 rounded-lg gap-2' onClick={handleClick} >
+              <MdOutlineAutoDelete className='delete-icon mb-1 text-xl  text-red-300'/>
+                <span>Delete Your Account</span> 
+                 </div> 
+                 </>
+                 
+              
+    
   )
 }
-const Button = styled.button`
-display: flex;
-justify-content: center;
-align-items: center;
-padding: 0.5rem;
-border-radius: 0.5rem;
-background-color: #9a86f3;
-border: none;
-cursor: pointer;
-svg {
-  font-size: 1.3rem;
-  color: #ebe7ff;
-`
+
+
 
 export default LogOut

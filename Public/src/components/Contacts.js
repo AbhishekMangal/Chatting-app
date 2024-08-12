@@ -1,46 +1,72 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, {  useEffect, useState } from 'react';
 import styled from 'styled-components';
-import userContext from '../Context/userContext';
-import Logo from '../Assets/logo.svg';
 
-const Contacts = ({ contacts, currUser, changeChat, length, setLength, notifications , setNotification}) => {
+import Logo from '../Assets/logo.svg';
+import { useDispatch, useSelector } from 'react-redux';
+import { BiPowerOff } from 'react-icons/bi';
+import LogOut from './LogOut';
+import { setContact, setCurrChatDetails, setCurrentChat, setNotifications } from '../Features/chat/ChatSlice';
+import { setUser, setUserDetails } from '../Features/user/userSlice';
+import { useNavigate } from 'react-router-dom';
+import DropDown from './DropDown';
+
+const Contacts = ({ changeChat, notifications , setNotification}) => {
+  const{contact} = useSelector(state => state.chat)
+  const {user} = useSelector(state=> state.user)
   const [currUserName, setCurrUserName] = useState(undefined);
   const [currentUserImage, setCurrentImage] = useState({});
   const [currSelected, setcurrSelected] = useState(undefined);
-
+ 
+const navigate = useNavigate();
+const dispatch = useDispatch();
   useEffect(() => {
-    if (currUser ) {
-      setCurrUserName(currUser.username);
-      setCurrentImage(currUser.avtarImage);
+    if (user ) {
+      setCurrUserName(user.username);
+      setCurrentImage(user.avtarImage);
     }
-  }, [currUser]);
+  }, [user]);
 
   const changeCurrentChat = (index, contact) => {
+    
     setNotification((prevNotifications) => 
       prevNotifications.filter((notif) => notif.from !== contact._id))
     setcurrSelected(index);
+    dispatch(setCurrentChat(contact))
+    dispatch(setCurrChatDetails(false))
+    console.log(contact)
     changeChat(contact, index);
 
-  };
+  }; 
+  
 
+    
   return (
     <>
     
-      {currentUserImage && currUserName && (
-        <Container>
-          <div className="brand">
-            <img src={Logo} alt="" />
-            <h3>snappy</h3>
+    <Container >
+      <div className='grid grid-rows-[auto_1fr] bg-[#080420] overflow-hidden min-h-full'>
+      {currentUserImage  && (
+          <div className="header flex justify-between items-center p-4  border-b-2 border-solid border-[#022c7a]">
+            <div className='logo h-8 '>
+            <img src={Logo} alt="" className='h-8' />
+            </div>
+          
+           <div className='title text-slate-300'>
+            <h4>Snappy</h4>
+            </div>
+            <div className="user-profile cursor-pointer">
+            <div className="relative group:" onClick={()=> dispatch(setUserDetails(true))}>
+              <img src={`data:image/svg+xml;base64,${currentUserImage}`} alt="avtar"  className='h-10'  />
+            </div>
+           
           </div>
-          <div className="contacts">
-            {contacts &&
-              contacts.map((contact, index) => {
-              //  if(index === currSelected)
-              //  {
-              //   // console.log(5);
-              //   const Notfication = notifications.filter((notif)=> notif.from !== contact._id);
-              //   setNotification(Notfication);
-              //  }
+            
+          </div>
+        )}
+          <div className="contacts mt-2 bg-[#000223]">
+            {contact &&
+              contact.map((contact, index) => {
+             
                 const unreadMessages = notifications.filter(
                   (notif) => notif.from === contact._id
                 ).length;
@@ -67,38 +93,15 @@ const Contacts = ({ contacts, currUser, changeChat, length, setLength, notificat
                 );
               })}
           </div>
-          <div className="current-user">
-            <div className="avatar">
-              <img src={`data:image/svg+xml;base64,${currentUserImage}`} alt="avtar" />
-            </div>
-            <div className="username">
-              <h2>{currUserName}</h2>
-            </div>
           </div>
         </Container>
-      )}
+        
     </>
   );
 };
 
 const Container = styled.div`
-  display: grid;
-  grid-template-rows: 10% 75% 15%;
-  overflow: hidden;
-  background-color: #080420;
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    justify-content: center;
-    img {
-      height: 2rem;
-    }
-    h3 {
-      color: white;
-      text-transform: uppercase;
-    }
-  }
+  
   .contacts {
     display: flex;
     flex-direction: column;

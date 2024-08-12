@@ -8,36 +8,50 @@ import Contacts from "../components/Contacts";
 import Welcome from "../components/Welcome";
 import ChatContainer from "../components/ChatContainer";
 import io from "socket.io-client";
+import { useDispatch, useSelector } from "react-redux";
+import { setContact, setCurrentChat, setcurrSelected } from "../Features/chat/ChatSlice";
+import { setUser } from "../Features/user/userSlice";
+import Profile from "./Profile";
+import UserPage from "./UserPage";
 
 const Chat = () => {
   const socket = useRef();
-  const [contact, setContact] = useState([]);
   const { getuser } = useContext(userContext);
-  const [user, setUser] = useState(undefined);
-  const [currentChat, setCurrentChat] = useState(undefined);
   const [isLoaded, setLoaded] = useState(false);
-  const [length, setLength] = useState([]);
   const [notifications, setNotifications] = useState([]);
-  const [currSelected, setcurrSelected] = useState(undefined);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const{contact, currentChat, currChatDetails} = useSelector(state => state.chat);
+  const{userDetails} = useSelector(state => state.user);
 
+  const{user} = useSelector(state => state.user)
+
+  
+  
+  
   const getUsers = async () => {
     const response = await getuser();
-    console.log(response)
+ 
     if (response && response.data.User && response.data.User.isAvtarImage) {
-      const response = await axios.get(allUserRoute, {
+
+      // If user login then get all the users except him
+
+      const response = await axios.get(allUserRoute, {  
         headers: {
           "auth-token": localStorage.getItem("authToken"),
         },
       });
-      setUser(await JSON.parse(localStorage.getItem("chat-app-user")));
-      setContact(response.data);
+      dispatch(setUser(await JSON.parse(localStorage.getItem("chat-app-user"))))
+      dispatch(setContact(response.data));
       setLoaded(true);
-    } else {
+    } 
+    else {
       navigate("/setAvtar");
     }
   };
 
+
+  // if not login then nvaigate
   useEffect(() => {
     if (!localStorage.getItem("authToken")) {
       navigate("/login");
@@ -46,6 +60,8 @@ const Chat = () => {
     }
   }, []);
 
+
+  // For notification and socket connection 
   useEffect(() => {
     if (user) {
       socket.current = io(host);
@@ -60,47 +76,30 @@ const Chat = () => {
   }, [user]);
 
   const handleChatchange = (chat, index) => {
-    setCurrentChat(chat);
-    
-    setcurrSelected(index);
-   console.log(currentChat);
-    setNotifications((prevNotifications) =>
+    dispatch(setCurrentChat(chat));  
+    console.log(currentChat, chat)
+    dispatch(setcurrSelected(index));
+   setNotifications((prevNotifications) =>
       prevNotifications.filter((notif) => notif.from !== chat._id)
   );
+
 
   };
 
   return (
     <Container>
-      <div className="container">
-        <Contacts
-          contacts={contact}
-          currUser={user}
-          changeChat={handleChatchange}
-          length={length}
-          setLength={setLength}
-          notifications={notifications}
-          setNotification={setNotifications}
-        />
-        {isLoaded && currentChat === undefined ? (
-          <Welcome
-            contacts={contact}
-            currUser={user}
-            changeChat={handleChatchange}
-          />
-        ) : (
-          <ChatContainer
-            currChat={currentChat}
-            currUser={user}
-            socket={socket}
-            length={length}
-            setLength={setLength}
-            currSelected={currSelected}
-            notifications={notifications}
-            setNotifications={setNotifications}
-          
-          />
-        )}
+      
+      <div className=" h-screen max-w-full grid grid-cols-[40%_60%] xl:grid-cols-[25%_75%] w-full bg-[#00000076]">
+        {userDetails === true ?  (
+          <UserPage/>
+
+        ):(
+        <Contacts  changeChat={handleChatchange} notifications={notifications} setNotification={setNotifications}/>
+        )
+        }
+        {isLoaded && !currentChat ? (
+          <Welcome/>
+        ) : currChatDetails ?(<Profile/>) : ( <ChatContainer socket={socket} notifications={notifications} setNotifications={setNotifications}/>  )}
       </div>
     </Container>
   );
@@ -108,21 +107,15 @@ const Chat = () => {
 
 const Container = styled.div`
   height: 100vh;
-  width: 100vw;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 1rem;
   align-items: center;
   background-color: #131324;
-  .container {
-    height: 85vh;
-    width: 85vw;
-    background-color: #00000076;
-    display: grid;
-    grid-template-columns: 25% 75%;
-    @media screen and (min-width: 720px) and (max-width: 1080px) grid-template-columns: 35% 65%;
-  }
+  overflow:hidden
+  
 `;
 
 export default Chat;

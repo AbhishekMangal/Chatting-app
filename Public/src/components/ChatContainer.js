@@ -5,32 +5,33 @@ import ChatInput from "./ChatInput";
 import { getAllMessageRoute, sendMessageRoute } from "../util/ApiRoute";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { setCurrChatDetails } from "../Features/chat/ChatSlice";
 
 const ChatContainer = ({
-  currChat,
-  currUser,
   socket,
-  length,
-  setLength,
-  currSelected,
   notifications,
   setNotifications
 }) => {
+  const{ currentChat} = useSelector(state => state.chat)
+  const{user} = useSelector(state => state.user)
   const [messages, setMessage] = useState([]);
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const scrollRef = useRef();
 
+const dispatch = useDispatch();
   useEffect(() => {
-    if (currUser && currChat) {
+    if (user && currentChat) {
       fetchMessage();
     }
-  }, [currChat]);
+  }, [currentChat]);
 
   const fetchMessage = async () => {
-    if (currChat) {
+    if (currentChat) {
       const response = await axios.post(getAllMessageRoute, {
-        from: currUser._id,
-        to: currChat._id,
+        from: user._id,
+        to: currentChat._id,
       });
       setMessage(response.data);
     }
@@ -38,14 +39,14 @@ const ChatContainer = ({
 
   const handleSendMsz = async (msg) => {
     socket.current.emit("send-msg", {
-      to: currChat._id,
-      from: currUser._id,
+      to: currentChat._id,
+      from: user._id,
       message: msg,
-      length: length,
+  
     });
     await axios.post(sendMessageRoute, {
-      from: currUser._id,
-      to: currChat._id,
+      from: user._id,
+      to: currentChat._id,
       message: msg,
     });
     const msgs = [...messages];
@@ -62,14 +63,14 @@ const ChatContainer = ({
       });
     }
     setMessage([]);
-  }, [currChat]);
+  }, [currentChat]);
 
   useEffect(() => {
-    if (arrivalMessage && currChat && arrivalMessage.from === currChat._id) {
+    if (arrivalMessage && currentChat && arrivalMessage.from === currentChat._id) {
       setMessage((prev) => [...prev, arrivalMessage]);
-      setLength((prev) => [...prev, length + 1]);
+      
      
-      setNotifications(notifications.filter((notif) => notif.from !== currChat._id));
+      setNotifications(notifications.filter((notif) => notif.from !== currentChat._id));
       
     }
   }, [arrivalMessage]);
@@ -80,21 +81,21 @@ const ChatContainer = ({
 
   return (
     <>
-      {currChat && (
+      {currentChat && (
         <Container>
-          <div className="chat-header">
+          <div className="chat-header cursor-pointer" onClick={()=> dispatch(setCurrChatDetails(true))}>
             <div className="user-details">
               <div className="avatar">
                 <img
-                  src={`data:image/svg+xml;base64,${currChat.avtarImage}`}
+                  src={`data:image/svg+xml;base64,${currentChat.avtarImage}`}
                   alt="avatar"
                 />
               </div>
               <div className="username">
-                <h3>{currChat.username}</h3>
+                <h3>{currentChat.username}</h3>
               </div>
             </div>
-            <LogOut />
+        
           </div>
           <div className="chat-messages">
             {messages.map((message) => {
@@ -128,7 +129,7 @@ const Container = styled.div`
   gap: 0.1rem;
   overflow: hidden;
   @media screen and (min-width: 720px) and (max-width: 1080px) {
-    grid-template-rows: 15% 70% 15%;
+    grid-template-rows: 10% 80% 10%;
   }
   .chat-header {
     display: flex;
@@ -141,7 +142,7 @@ const Container = styled.div`
       gap: 1rem;
       .avatar {
         img {
-          height: 3rem;
+          height: 2rem;
         }
       }
       .username {
@@ -160,7 +161,7 @@ const Container = styled.div`
     &::-webkit-scrollbar {
       width: 0.2rem;
       &-thumb {
-        background-color: #ffffff39;
+        background-color: #9a86f3;
         width: 0.1rem;
         border-radius: 1rem;
       }

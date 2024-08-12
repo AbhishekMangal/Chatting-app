@@ -6,14 +6,12 @@ const { Server } = require("socket.io");
 
 const app = express();
 app.use(express.json());
-app.use(cors(
-  {
-  origin: "https://chatting-app-11.onrender.com",
-// origin: "http://localhost:3000/",
-methods: ["GET", "POST"],
-credentials: true,
-}
-));
+
+app.use(cors({
+  origin: ["https://chatting-app-11.onrender.com", "http://localhost:3000"],
+  methods: ["GET", "POST"],
+  credentials: true
+}));
 
 const httpServer = http.createServer(app);
 
@@ -26,42 +24,34 @@ app.use('/api/request', require('./Routes/Request'));
 
 const port = process.env.PORT || 5000;
 const server = httpServer.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`Server is running on port ${port}`);
 });
 
-const userName = process.env.Name
-const password = process.env.password
-
+const userName = process.env.Name;
+const password = process.env.password;
 
 connectToMongo(userName, password);
+
 const io = new Server(server, {
   cors: {
-    origin: "https://chatting-app-11.onrender.com",
-    // origin: "http://localhost:3000/",
+    origin: ["https://chatting-app-11.onrender.com", "http://localhost:3000"],
     methods: ["GET", "POST"],
-    credentials: true,
-  },
+    credentials: true
+  }
 });
 
 global.onlineUsers = new Map();
 
 io.on("connection", (socket) => {
-
-  global.chatSocket = socket;
   socket.on("add-user", (userId) => {
     onlineUsers.set(userId, socket.id);
   });
+
   socket.on("send-msg", (data) => {
     const sendUserSocket = onlineUsers.get(data.to);
     if (sendUserSocket) {
-      socket.to(sendUserSocket).emit("msg-recieve", 
-        {message :data.message,
-          from: data.from
-    });
-      socket.to(sendUserSocket).emit("new-message", {
-        from: data.from,
-        message: data.message,
-      });
+      socket.to(sendUserSocket).emit("msg-recieve", { message: data.message, from: data.from });
+      socket.to(sendUserSocket).emit("new-message", { from: data.from, message: data.message });
     }
   });
 });

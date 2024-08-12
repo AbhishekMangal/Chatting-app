@@ -1,12 +1,14 @@
 import React from 'react'
 import styled from 'styled-components'
 import Robot from '../Assets/robot.gif'
-const Welcome = ({currUser}) => {
+import { useSelector } from 'react-redux'
+const Welcome = () => {
+  const{user} = useSelector(state => state.user)
   return (
     <Container>
       <img src={Robot} alt="Robot"  />
       <h1>
-      Welcome  <span> {currUser.username} </span>
+      Welcome  <span> {user!== undefined &&  user.username} </span>
      </h1>
      <h3>Select a Chat to start Mesaging</h3>
     </Container>

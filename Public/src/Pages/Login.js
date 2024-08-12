@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components'
 import Logo from '../Assets/logo.svg'
-import useSound from 'use-sound';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
@@ -11,7 +10,7 @@ import userContext from '../Context/userContext';
 
 const Login = () => {
     const context = useContext(userContext);
-    const {user, setUser} = context;
+  
 
 
 
@@ -41,7 +40,7 @@ const Login = () => {
                     localStorage.setItem('authToken', data.data.authToken)
                    
                     localStorage.setItem('chat-app-user', JSON.stringify(data.data.User));
-                    await setUser(data.data.User);
+                
                  
                     navigate('/')
                }

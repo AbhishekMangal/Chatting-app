@@ -56,10 +56,13 @@ const ChatInput = ({handleSendMsz}) => {
 }
 const Container = styled.div`
 display: grid;
-align-items: center;
-grid-template-columns: 5% 95%;
-background-color: #080420;
+
+grid-template-columns: 3% 75%;
+place-content: center;
+place-items: center;
+// background-color: #080420;
 padding: 0 2rem;
+gap: 1rem;
 @media screen and (min-width: 720px) and (max-width: 1080px) {
   padding: 0 1rem;
   gap: 1rem;
@@ -78,7 +81,7 @@ padding: 0 2rem;
     }
     .EmojiPickerReact {
       position: absolute;
-      top: -480px;
+      top: -472px;
       background-color: #080420;
         box-shadow: 0 5px 10px #9a86f3;
         border-color: #9a86f3;
@@ -102,6 +105,8 @@ padding: 0 2rem;
   border-radius: 2rem;
   display: flex;
   align-items: center;
+  justify-content: center;
+  
   gap: 2rem;
   background-color: #ffffff34;
   input {
@@ -121,7 +126,7 @@ padding: 0 2rem;
     }
   }
   button {
-    padding: 0.3rem 2rem;
+    padding: 0 2rem;
     border-radius: 2rem;
     display: flex;
     justify-content: center;
