@@ -37,7 +37,7 @@ module.exports.getAllMessage = async(req, res, next)=>
                 $all: [from, to]
             },
         }).sort({updated:1 });
-        // console.log(messages);
+     
         const projectMessage = messages.map((msg)=>
         {
             return {
@@ -46,9 +46,10 @@ module.exports.getAllMessage = async(req, res, next)=>
                 canSend: msg.canSend
             };
     });
+    
      res.json(projectMessage);
     } catch (error) {
-        next(ex);
+        next(error);
     }
 }
 module.exports.blockUser = async(req, res, next)=>

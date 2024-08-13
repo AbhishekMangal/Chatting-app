@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import LogOut from "./LogOut";
 import ChatInput from "./ChatInput";
 import { blockUser, getAllMessageRoute, sendMessageRoute, unBlockUser } from "../util/ApiRoute";
@@ -10,6 +10,7 @@ import { setCurrChatDetails, setCurrentChat } from "../Features/chat/ChatSlice";
 import { GoArrowLeft } from "react-icons/go";
 import { MdBlockFlipped } from "react-icons/md";
 import { toast, ToastContainer } from "react-toastify";
+import userContext from "../Context/userContext";
 
 const ChatContainer = ({
   socket,
@@ -22,11 +23,13 @@ const ChatContainer = ({
   const [messages, setMessage] = useState([]);
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const [isBlocked, setIsBlocked] = useState(false);
+  const {getImageMimeType} = useContext(userContext)
   const scrollRef = useRef();
   const toastOption = {
-    position: "bottom-right",
-    autoClose: 8000,
+    position: "top-right",
+    autoClose: 5000,
     pauseOnHover: true,
+    closeOnClick: true,
     draggable: true,
     theme:"dark"
 }
@@ -46,6 +49,7 @@ const ChatContainer = ({
       setMessage(response.data);
       console.log(response.data)
       const lastmess = response.data[response.data.length -1];
+  
       if(lastmess.canSend === false)
       {  
         setIsBlocked(true);
@@ -80,10 +84,10 @@ const ChatContainer = ({
         from: user._id,
         to: currentChat._id,
       })
-      console.log(response.data)
+    
       if(response.data.success)
       {
-        toast.success("UnBlocked Successfully", toastOption)
+        toast.info("UnBlocked Successfully", toastOption)
         setIsBlocked(false);
       }
       else
@@ -101,7 +105,7 @@ const ChatContainer = ({
       
       if(response.data.success)
       {
-        toast.success(response.data.msz, toastOption)
+        toast.warning(response.data.msz, toastOption)
         setIsBlocked(true);
       }
       else{
@@ -144,12 +148,12 @@ const ChatContainer = ({
   return (
     <>
       {currentChat && (
-        <div className="grid  grid-rows-[20%,70%,10%] gap-[0.1rem] overflow-hidden">
+        <div className="grid  grid-rows-[20%,70%,10%] gap-[0.1rem] overflow-hidden h-[85vh]">
           <div className="flex justify-between items-center px-8 ">
             <div className="flex items-center gap-4 cursor-pointer" onClick={() => dispatch(setCurrChatDetails(true))}>
               <GoArrowLeft className="text-2xl mx-5 text-white sm:hidden" onClick={() => handleChatchange(null, undefined)} />
               <div className="avatar">
-                <img src={`data:image/svg+xml;base64,${currentChat.avtarImage}`} alt="avatar" className="h-8"/>
+              <img  src={`data:${getImageMimeType(currentChat.avtarImage)};base64,${currentChat.avtarImage}`} alt="avatar" className="h-12 w-12 rounded-full object-cover"/>
               </div>
               <div className="username">
                 <h3 className="text-white">{currentChat.username}</h3>

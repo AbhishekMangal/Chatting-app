@@ -1,24 +1,26 @@
 import axios from 'axios';
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify';
 import styled from 'styled-components';
-
-
-import loader from '../Assets/loader.gif'
 import { getuserRouter, setAvtarRoute } from '../util/ApiRoute';
 import userContext from '../Context/userContext';
-import { Buffer } from 'buffer';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUser } from '../Features/user/userSlice';
+import null_image from '../Images/null images.jpg'
+
 
 
 const SetAvtar = () => {
     const context = useContext(userContext);
-    const {user, setUser, getuser} = context;
+    const {getImageMimeType} = context;
     const api = "https://api.multiavatar.com/45678945";
-    const [avatars, setAvatar] = useState([]);
-    const [Loading, setLoading] = useState(true);
-    const [SelectedAvatars, setSelectedAvatars] = useState(undefined);
-    
+    const {user} = useSelector(state=> state.user)
+   
+    const [avatars, setAvatar] = useState();
+   
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const toastOption = {
         position: "bottom-right",
         autoClose: 8000,
@@ -26,31 +28,23 @@ const SetAvtar = () => {
         draggable: true,
         theme:"dark"
     }
+    const ref = useRef(null)
     const setProfilePicture = async()=>{
       
-        if(SelectedAvatars === undefined)
+        if(avatars === undefined)
         {
             toast.error("please select an avatar", toastOption);
         }
         else
         {
-        
-           
-          
-           
-            
-               
-                
             if(user ){
                 const {data} = await axios.post(`${setAvtarRoute}/${user._id}`,{
-                    image: avatars[SelectedAvatars],
+                    image: avatars,
                 });
                 if(data.isSet){
-                    user.isAvtarImage = true;
-                    user.avtarImage = avatars[SelectedAvatars];
-                    localStorage.setItem('chat-app-user', JSON.stringify(user));
-                    setUser(user);
-                    
+                   
+                    dispatch(setUser(({ ...user,  avtarImage: avatars })));
+                    toast.success("Image Update SuccessFully", toastOption);
                     navigate("/");
                 }
                 }
@@ -58,102 +52,68 @@ const SetAvtar = () => {
                 {
                     toast.error("Some Error Occurred. Please try again !!",toastOption)
                 }
-            
-           
-
-
         }
         
     };
-    
-    // useEffect(async()=>{
-       const fetchData = async()=>{
-        const response =  await getuser();
-        if(response.data.success){
-        if(!response.data.User.isAvtarImage){
-        const data = [];
-        for(let i=0 ; i<10; i++)
-        {
-            try{
-            const image = await axios.get(
-            `${api}/${Math.round(Math.random()*1000)}`
-            );
-            if(image && image.data){
-                
-                
-            const buffer = Buffer.from(image.data);
-
-            // Convert the buffer to a base64 string
-            const base64String = buffer.toString('base64');
-            
-            // Push the base64 string into the 'data' array
-            data.push(base64String);
-            }
-        }catch(error)
-        {
-            console.error(error)
-        }
-          
-          
-       
-
-        }
-       
-        setAvatar(data);
-        setLoading(false);
-    }
-    else
+    useEffect(()=>
     {
-        toast.error("Bro You had Already Selected Your Avtar")
-        navigate("/");
-    }
-}
-else
-{
-    toast.error("Some error Occurred!! Please refresh the Page")
-}
-
-        // toast.dismiss();
-    }
-        
-
-        useEffect(()=>
+        if(user  === undefined)
         {
-             fetchData();
-           
-        }, [api])
+            navigate('/')
+        }
+    }, [])
+    
+   
+const handleImageChange =async(e)=>
+    {
+        console.log(user)
+      const file = e.target.files[0];
+      if(file)
+      {
+        const reader = new FileReader();
+        reader.onload =async ()=>
+        {
+          const base64String = reader.result.split(',')[1]
+          setAvatar(base64String)
+
+        }
+        reader.readAsDataURL(file);
+       
         
+
+      }
+    }
+
+
        
 
-    const navigate = useNavigate();
 
   return (
     <>    
-    {
-        Loading ? <Container>
-            <img src={loader} alt="loader" className='loader' />
-        </Container>:  (
+    
+      
+           
+         
             <Container>
             <div className="title-container">
                <h1>Pick an avtar as your profile picture </h1>
-               <div className="avatars">
-                  { avatars.map((avatar,index)=>{
-                       return (
-                           <div key={index} className={`avatar ${SelectedAvatars=== index?"selected": ""}`}>
-                               <img src={`data:image/svg+xml;base64,${avatar}`} alt="avatar" 
-                               onClick={()=>setSelectedAvatars(index)} />
-                           </div>
-                       )
-                   }
-                   )}
+                    <div className="avatars justify-center pt-5">
+               {avatars ?(
+                
+                    <img src={`data:${getImageMimeType(avatars)};base64,${avatars}`}alt="avatar" className="h-48 w-48 rounded-full object-cover" onClick={() => ref.current.click()} />
+                  
+                ):
+                <img src = {null_image} className='h-48 w-48 rounded-full object-cover' onClick={()=> ref.current.click()}/>
+            }
+            <input type='file' className='hidden' ref = {ref} onChange={handleImageChange}/>
+                     </div>  
        
-               </div>
             </div>
             <button className='submit-btn 'onClick={setProfilePicture}>set As Profile Picture</button>
              <ToastContainer/>
            </Container>
-        )
-    }
+        
+    
     
     </>
 

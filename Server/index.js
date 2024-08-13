@@ -5,7 +5,7 @@ const http = require('http');
 const { Server } = require("socket.io");
 
 const app = express();
-app.use(express.json());
+app.use(express.json({limit: '10mb'}));
 
 app.use(cors({
   origin : "https://chatting-app-11.onrender.com",

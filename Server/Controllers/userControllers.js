@@ -166,7 +166,7 @@ try{
   const info = await transporter.sendMail({
     from: '"Snappy 👻" <abhishemangal12345@gmail.com>', // sender address
     to: email, // list of receivers
-    subject: "Hello ✔", // Subject line
+    subject: "Hello Enter this otp for register into snappy", // Subject line
     text: otps, // plain text body
     html: `<b>${otps}</b>`, // html body
   });
@@ -176,15 +176,24 @@ try{
     res.json({success: false, msz:"Internal Server Error"});
     console.error(error);
 }
-
-  // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-
-  //
-  // NOTE: You can go to https://forwardemail.net/my-account/emails to see your email delivery status and preview
-  //       Or you can use the "preview-email" npm package to preview emails locally in browsers and iOS Simulator
-  //       <https://github.com/forwardemail/preview-email>
-  //
-
-
+   
 
 }
+// module.exports.updateuserImage = async(req,res, next)=>
+// {
+//     try {
+        
+//         const userId = req.params.id;
+//         const avtarImage = req.body.image;
+//         const userData = await user.findByIdAndUpdate(userId, {
+//             isAvtarImage: true,
+//             avtarImage: avtarImage
+//         })
+//         return res.json({
+//             isSet: userData.isAvtarImage,
+//             image: userData.avtarImage
+//         })
+//     } catch (error) {
+//         next(ex);
+//     }
+// }

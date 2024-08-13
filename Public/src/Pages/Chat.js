@@ -10,7 +10,6 @@ import ChatContainer from "../components/ChatContainer";
 import io from "socket.io-client";
 import { useDispatch, useSelector } from "react-redux";
 import { setContact, setCurrentChat, setcurrSelected } from "../Features/chat/ChatSlice";
-import { setUser } from "../Features/user/userSlice";
 import Profile from "./Profile";
 import UserPage from "./UserPage";
 
@@ -33,26 +32,24 @@ const Chat = () => {
     const response = await getuser();
  
     if (response && response.data.User && response.data.User.isAvtarImage) {
-
-      // If user login then get all the users except him
-
+    
       const response = await axios.get(allUserRoute, {  
         headers: {
           "auth-token": localStorage.getItem("authToken"),
         },
       });
-      dispatch(setUser(await JSON.parse(localStorage.getItem("chat-app-user"))))
       dispatch(setContact(response.data));
       setLoaded(true);
     } 
     else {
-      navigate("/setAvtar");
+      navigate("/login");
     }
   };
 
 
   // if not login then nvaigate
   useEffect(() => {
+
     if (!localStorage.getItem("authToken")) {
       navigate("/login");
     } else {

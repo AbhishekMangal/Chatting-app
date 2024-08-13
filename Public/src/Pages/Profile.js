@@ -16,7 +16,8 @@ const Profile = () => {
       <span className='px-6 font-sans text-xl'>Contact Details</span>
     </div>
     <div className=" flex items-end justify-center pb-2 ]">
-    <img src={`data:image/svg+xml;base64,${currentChat.avtarImage}`} alt="avtar"  className='h-52'  />
+    <img src={`data:image/jpg+svg+xml;base64,${currentChat.avtarImage}`} alt="avtar"  className='h-52'  />
+    
     </div>
     <div className="b rounded flex flex-col justify-evenly gap-2 px-3">
      <div className='userName  p-2 bg-[#ffffff34] rounded-md  text-center'> Name: {currentChat.username}</div>

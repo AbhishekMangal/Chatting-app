@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components'
 import Logo from '../Assets/logo.svg'
@@ -8,16 +8,14 @@ import axios from 'axios';
 import { loginRoute } from '../util/ApiRoute';
 import userContext from '../Context/userContext';
 import { setUser } from '../Features/user/userSlice';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Login = () => {
     const context = useContext(userContext);
   
 const dispatch = useDispatch();
-
-
-
     const navigate = useNavigate();
+    const {user} = useSelector(state=>state.user)
     const [values,setValues] = useState({email: "", password: ""})
     const toastOption = {
         position: "bottom-right",
@@ -41,11 +39,7 @@ const dispatch = useDispatch();
                 {
                     toast.success("Registerd SuccessFully", toastOption)
                     localStorage.setItem('authToken', data.data.authToken)
-                   
-                    localStorage.setItem('chat-app-user', JSON.stringify(data.data.User));
                     dispatch(setUser(data.data.User))
-                
-                 
                     navigate('/')
                }
                else 
@@ -58,10 +52,6 @@ const dispatch = useDispatch();
     const handleValidation = ()=>
     {
         const {email, password } = values;
-        
-       
-        
-      
          if(email === "")
         {
             toast.error("email should not be blank", toastOption);
@@ -79,6 +69,13 @@ const dispatch = useDispatch();
     {
         setValues({...values , [e.target.name]: e.target.value});
     }
+    useEffect(()=>
+    {
+        if(localStorage.getItem('authToken'))
+        {
+            navigate('/')
+        }
+    },[user])
       
     
   return (

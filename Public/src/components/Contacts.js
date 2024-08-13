@@ -1,30 +1,21 @@
-import React, {  useEffect, useState } from 'react';
+import React, {  useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import Logo from '../Assets/logo.svg';
 import { useDispatch, useSelector } from 'react-redux';
-import { BiPowerOff } from 'react-icons/bi';
-import LogOut from './LogOut';
 import { setContact, setCurrChatDetails, setCurrentChat, setcurrSelected, setNotifications } from '../Features/chat/ChatSlice';
-import { setUser, setUserDetails } from '../Features/user/userSlice';
-import { useNavigate } from 'react-router-dom';
+import {  setUserDetails } from '../Features/user/userSlice';
+import null_image from '../Images/null images.jpg'
+import userContext from '../Context/userContext';
 
 
 const Contacts = ({ changeChat, notifications , setNotification}) => {
   const{contact, currSelected} = useSelector(state => state.chat)
   const {user} = useSelector(state=> state.user)
-  const [currUserName, setCurrUserName] = useState(undefined);
-  const [currentUserImage, setCurrentImage] = useState({});
-
- 
-const navigate = useNavigate();
+  const {getImageMimeType} = useContext(userContext)
+  
 const dispatch = useDispatch();
-  useEffect(() => {
-    if (user ) {
-      setCurrUserName(user.username);
-      setCurrentImage(user.avtarImage);
-    }
-  }, [user]);
+  
 
   const changeCurrentChat = (index, contact) => {
     
@@ -45,7 +36,7 @@ const dispatch = useDispatch();
     
     <Container >
       <div className='grid grid-rows-[20%,80%] bg-[#080420] overflow-hidden h-full'>
-      {currentUserImage  && (
+      {user  && (
           <div className="header flex justify-between items-center p-4  ">
             <div className='logo h-8 '>
             <img src={Logo} alt="" className='h-8' />
@@ -56,7 +47,9 @@ const dispatch = useDispatch();
             </div>
             <div className="user-profile cursor-pointer">
             <div className="relative group:" onClick={()=> dispatch(setUserDetails(true))}>
-              <img src={`data:image/svg+xml;base64,${currentUserImage}`} alt="avtar"  className='h-10'  />
+              {user && user.avtarImage !== undefined &&(
+             <img  src={`data:${getImageMimeType(user.avtarImage)};base64,${user.avtarImage}`} alt="avatar" className="h-12 w-12 rounded-full object-cover"/>
+              )}
             </div>
            
           </div>
@@ -78,7 +71,11 @@ const dispatch = useDispatch();
                     onClick={() => changeCurrentChat(index, contact)}
                   >
                     <div className="avatar">
-                      <img src={`data:image/svg+xml;base64,${contact.avtarImage}`} alt="avtar" />
+                      { contact.avtarImage ? (
+                      <img  src={`data:${getImageMimeType(contact.avtarImage)};base64,${contact.avtarImage}`} alt="avatar" className="h-12 w-12 rounded-full object-cover"/>
+
+                      ):<img src={null_image} alt="avtar" />
+              }
                     </div>
                     <div className="username">
                       <h3>{contact.username}</h3>

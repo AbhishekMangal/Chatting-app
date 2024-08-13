@@ -6,11 +6,15 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { otpSender, registerRoute } from '../util/ApiRoute';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUser } from '../Features/user/userSlice';
 
 const Register = () => {
     const navigate = useNavigate();
     const [values,setValues] = useState({username:"", email: "", password: "", confirmPassword: "", Otp: ""})
     const [otp ,setOtp] = useState(false);
+    const {user} = useSelector(state=>state.user)
+    const dispatch = useDispatch();
     const toastOption = {
         position: "bottom-right",
         autoClose: 8000,
@@ -18,14 +22,7 @@ const Register = () => {
         draggable: true,
         theme:"dark"
     }
-//     useEffect(()=>
-//   {
-//     if(localStorage.getItem("authToken"))
-//     {
-//         console.log("s");
-//       navigate('/pageNotFound');
-//     }
-//   }, [localStorage.getItem("authToken")])
+
     const handleSubmit= async(e)=>
     {
         e.preventDefault();
@@ -33,7 +30,6 @@ const Register = () => {
         {
             
             const {username, email, password, Otp } = values;
-            // console.log(Otp);
             const data = await axios.post(registerRoute, 
                 {username, email, password,Otp}
                 );
@@ -42,9 +38,8 @@ const Register = () => {
                {
                 toast.success("Registerd SuccessFully", {toastOption})
                 localStorage.setItem('authToken', data.data.authToken)
-             
-                localStorage.setItem('chat-app-user', data.data.User)
-                navigate('/')
+                dispatch(setUser(data.data.User))
+                navigate('/setAvtar')
                }
                else 
                {
@@ -113,6 +108,13 @@ const Register = () => {
         }
         
     }
+    useEffect(()=>
+    {
+        if(localStorage.getItem('authToken') && user == undefined)
+        {
+            navigate('/')
+        }
+    })
   
     
   return (
