@@ -61,7 +61,7 @@ module.exports.blockUser = async(req, res, next)=>
                 $all: [from, to]
             }
         }).sort({updated: 1});
-        if(messages[messages.length -1].canSend)
+        if(messages.length == 0 || messages[messages.length -1].canSend)
         {
             const data = await MessageModel.create({
                 message: {text: "Blocked"},

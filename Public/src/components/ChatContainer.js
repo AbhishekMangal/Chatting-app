@@ -48,6 +48,8 @@ const ChatContainer = ({
       });
       setMessage(response.data);
       console.log(response.data)
+      if(messages.length>0)
+        {
       const lastmess = response.data[response.data.length -1];
   
       if(lastmess.canSend === false)
@@ -58,6 +60,11 @@ const ChatContainer = ({
       {
         setIsBlocked(false)
       }
+    }
+    else
+    {
+      setIsBlocked(false);
+    }
     }
   };
 
