@@ -9,6 +9,7 @@ module.exports.addMessage = async(req, res, next)=>
                 $all: [from, to]
             }
         }).sort({updated: 1});
+        
         if(messages.length == 0 ||  messages[messages.length -1].canSend)
         {
 
@@ -16,6 +17,8 @@ module.exports.addMessage = async(req, res, next)=>
             message: {text: message},
             users: [from, to],
             sender: from,
+            
+           
         });
         if(data) return res.json({success: true, msz: "message Created Successfully"});
         return res.json({success: false, msz: "Failed to send message"});
@@ -43,7 +46,8 @@ module.exports.getAllMessage = async(req, res, next)=>
             return {
                 fromSelf: msg.sender.toString() === from,
                 message: msg.message.text,
-                canSend: msg.canSend
+                canSend: msg.canSend,
+                createdAt: msg.createdAt
             };
     });
     

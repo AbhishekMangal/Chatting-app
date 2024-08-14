@@ -34,7 +34,7 @@ const Chat = () => {
     setProgress(20);
     const response = await getuser();
     setProgress(90);
-    if (response && response.data.User && response.data.User.isAvtarImage) {
+  if (response && response.data.User && response.data.User.isAvtarImage) {
     
       const response = await axios.get(allUserRoute, {  
         headers: {
@@ -45,7 +45,7 @@ const Chat = () => {
       setLoaded(true);
     } 
     else {
-      navigate("/login");
+      navigate("/setAvtar");
     }
     setProgress(100);
   };

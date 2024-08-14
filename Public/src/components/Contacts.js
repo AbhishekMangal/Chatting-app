@@ -82,7 +82,7 @@ const Contacts = ({ changeChat, notifications , setNotification}) => {
               }
                     </div>
                     <div className="username">
-                      <h3>{contact.username}</h3>
+                      <h3>{ contact.username}</h3>
                     
                     </div>
                     {unreadMessages > 0   && (

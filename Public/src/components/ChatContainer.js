@@ -73,6 +73,10 @@ const fetchMessage = async () => {
     setProgress(100)
   }
 };
+const formatTime = (dateString) => {
+  const options = { hour: '2-digit', minute: '2-digit' };
+  return new Date(dateString).toLocaleTimeString([], options);
+};
 
   const handleSendMsz = async (msg) => {
     socket.current.emit("send-msg", {
@@ -125,6 +129,7 @@ const fetchMessage = async () => {
           message: data.message,
           length: data.length,
           from: data.from,
+          
         });
       });
     }
@@ -177,23 +182,25 @@ const fetchMessage = async () => {
               title={isBlocked? 'Unblock':'Block'}/>
           </div>
           <div className="chat-messages flex flex-col gap-4 p-4 overflow-auto ">
-            {messages.map((message) => {
-              return (
-                <div
-                  ref={scrollRef}
-                  key={uuidv4()}
-                  className={`flex items-center ${message.fromSelf ? "justify-end" : "justify-start"
-                    }`}
-                >
-                  <div
-                    className={`content max-w-[40%] break-words p-4 text-[1.1rem] rounded-xl text-[#d1d1d1] ${message.fromSelf ? "bg-[#4f04ff21]" : "bg-[#9900ff20]"
-                      }`}
-                  >
-                    <p>{message.message}</p>
-                  </div>
-                </div>
-              );
-            })}
+          {messages.map((message) => {
+  return (
+    <div
+      ref={scrollRef}
+      key={uuidv4()}
+      className={`flex items-center ${message.fromSelf ? "justify-end" : "justify-start"
+        }`}
+    >
+      <div
+        className={`content max-w-[80%] md:min-w-[20%] md:max-w-[60%] min-w-[35%] break-words p-4 text-[1.1rem] rounded-xl ${message.fromSelf ? "bg-[#4f04ff21]" : "bg-[#9900ff20]"
+          }`}
+      >
+        <p className="message text-white ">{message.message}</p>
+        <p className="time text-right mt-2 text-xs text-[#b0b0b0] italic">{formatTime(message.createdAt)}</p>
+      </div>
+    </div>
+  );
+})}
+
           </div>
           {!isBlocked? (
           <div className={`chat-input flex items-center justify-center  `}>
