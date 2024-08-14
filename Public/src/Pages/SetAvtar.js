@@ -8,6 +8,7 @@ import userContext from '../Context/userContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from '../Features/user/userSlice';
 import null_image from '../Images/null images.jpg'
+import LoadingBar from 'react-top-loading-bar';
 
 
 
@@ -16,9 +17,8 @@ const SetAvtar = () => {
     const {getImageMimeType} = context;
     const api = "https://api.multiavatar.com/45678945";
     const {user} = useSelector(state=> state.user)
-   
     const [avatars, setAvatar] = useState();
-   
+    const [progress, setProgress] = useState(0);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const toastOption = {
@@ -30,18 +30,20 @@ const SetAvtar = () => {
     }
     const ref = useRef(null)
     const setProfilePicture = async()=>{
-      
-        if(avatars === undefined)
+      setProgress(10);
+        if(!avatars)
         {
             toast.error("please select an avatar", toastOption);
+            return
         }
         else
         {
             if(user ){
-                const {data} = await axios.post(`${setAvtarRoute}/${user._id}`,{
+                const response = await axios.post(`${setAvtarRoute}/${user._id}`,{
                     image: avatars,
                 });
-                if(data.isSet){
+                setProgress(60);
+                if(response.data.success){
                    
                     dispatch(setUser(({ ...user,  avtarImage: avatars })));
                     toast.success("Image Update SuccessFully", toastOption);
@@ -53,6 +55,7 @@ const SetAvtar = () => {
                     toast.error("Some Error Occurred. Please try again !!",toastOption)
                 }
         }
+        setProgress(100);
         
     };
     useEffect(()=>
@@ -66,7 +69,7 @@ const SetAvtar = () => {
    
 const handleImageChange =async(e)=>
     {
-        console.log(user)
+        
       const file = e.target.files[0];
       if(file)
       {
@@ -91,7 +94,11 @@ const handleImageChange =async(e)=>
   return (
     <>    
     
-      
+    <LoadingBar
+        color='#f11946'
+        progress={progress}
+        onLoaderFinished={() => setProgress(0)}
+      />
            
          
             <Container>

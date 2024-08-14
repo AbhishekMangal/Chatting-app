@@ -9,6 +9,7 @@ import { loginRoute } from '../util/ApiRoute';
 import userContext from '../Context/userContext';
 import { setUser } from '../Features/user/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import LoadingBar from 'react-top-loading-bar';
 
 const Login = () => {
     const context = useContext(userContext);
@@ -17,6 +18,7 @@ const dispatch = useDispatch();
     const navigate = useNavigate();
     const {user} = useSelector(state=>state.user)
     const [values,setValues] = useState({email: "", password: ""})
+    const [progress, setProgress] = useState(0)
     const toastOption = {
         position: "bottom-right",
         autoClose: 8000,
@@ -27,13 +29,14 @@ const dispatch = useDispatch();
     const handleSubmit= async(e)=>
     {
         e.preventDefault();
+        setProgress(10);
         if(handleValidation())
         {
-           
             const { email, password } = values;
             const data = await axios.post(loginRoute, 
                 { email, password}
                 );
+                setProgress(50);
                
                 if(data.data.success)
                 {
@@ -46,7 +49,8 @@ const dispatch = useDispatch();
                {
                 toast.error(data.data.msz, toastOption)
                }
-        }
+            }
+            setProgress(100);
     }
   
     const handleValidation = ()=>
@@ -80,6 +84,11 @@ const dispatch = useDispatch();
     
   return (
     <>
+     <LoadingBar
+        color='#f11946'
+        progress={progress}
+        onLoaderFinished={() => setProgress(0)}
+      />
     <FormContainer>
       <form onSubmit={handleSubmit}>
       <div className="brand">
@@ -90,7 +99,7 @@ const dispatch = useDispatch();
         <input type="email" name="email" id="email" placeholder='email' value={values.email} onChange={handleChange}/>
         <input type="password" name="password" id="password" placeholder='password' value={values.password} onChange={handleChange}/>
        
-        <button type='submit'>Login User</button>
+        <button type='submit' className={progress?'pointer-events-none': ''}>Login User</button>
         <span > 
         {/* <Link to="#"  style={{float: 'left'}}> forget Password </Link> 
         <Link to="/login"  style={{float: 'right'}}> Already Registered  </Link>  */}
@@ -116,8 +125,9 @@ background-color: #131324;
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 10px;
     img{
-        height: 5rem;
+        height: 2.5rem;
     }
     h1{
         color: white;
@@ -129,11 +139,11 @@ background-color: #131324;
         flex-direction: column;
         gap: 2rem;
         background-color: #00000076;
-        border-radius: 2rem;
-        padding: 3rem 5rem;
+        border-radius: 4rem;
+        padding: 3rem;
         input{
             background-color: transparent;
-            padding: 1rem 1rem;
+            padding: 1rem;
             border: 0.1rem solid #4e0eff;
             border-radius: 0.4rem;
             color: white;

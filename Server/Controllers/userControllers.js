@@ -115,10 +115,7 @@ module.exports.setAvatar = async(req, res, next)=>
             isAvtarImage: true,
             avtarImage: avtarImage
         })
-        return res.json({
-            isSet: userData.isAvtarImage,
-            image: userData.avtarImage
-        })
+        return res.json({success: true, image: userData.avtarImage})
     } catch (error) {
         next(ex);
     }

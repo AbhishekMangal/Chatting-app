@@ -8,6 +8,7 @@ import axios from 'axios';
 import { otpSender, registerRoute } from '../util/ApiRoute';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from '../Features/user/userSlice';
+import LoadingBar from 'react-top-loading-bar';
 
 const Register = () => {
     const navigate = useNavigate();
@@ -15,6 +16,7 @@ const Register = () => {
     const [otp ,setOtp] = useState(false);
     const {user} = useSelector(state=>state.user)
     const dispatch = useDispatch();
+    const [progress, setProgress] = useState(0);
     const toastOption = {
         position: "bottom-right",
         autoClose: 8000,
@@ -26,6 +28,7 @@ const Register = () => {
     const handleSubmit= async(e)=>
     {
         e.preventDefault();
+        setProgress(10);
         if(handleValidation())
         {
             
@@ -33,7 +36,7 @@ const Register = () => {
             const data = await axios.post(registerRoute, 
                 {username, email, password,Otp}
                 );
-                console.log(data.data.success);
+                setProgress(50);
                if(data.data.success)
                {
                 toast.success("Registerd SuccessFully", {toastOption})
@@ -48,6 +51,7 @@ const Register = () => {
                    navigate('/register');
                }
         }
+        setProgress(100);
     }
   
     const handleValidation = ()=>
@@ -86,6 +90,7 @@ const Register = () => {
       
     const handleGenerateOtp = async(e)=>
     {
+        setProgress(10);
         e.preventDefault();
         if(handleValidation){
         const {email} = values;
@@ -93,6 +98,7 @@ const Register = () => {
         const data = await axios.post(otpSender , 
             {email}
             );
+            setProgress(50);
         if(data.data.success)
         {
             toast.success("Otp sent Successfully", {toastOption});
@@ -106,19 +112,19 @@ const Register = () => {
             toast.error("otp is uanble to send" , {toastOption})
         }
         }
+        setProgress(100);
         
     }
-    useEffect(()=>
-    {
-        if(localStorage.getItem('authToken') && user == undefined)
-        {
-            navigate('/')
-        }
-    })
+   
   
     
   return (
     <>
+    <LoadingBar
+        color='#f11946'
+        progress={progress}
+        onLoaderFinished={() => setProgress(0)}
+      />
     <FormContainer>
       <form onSubmit={handleSubmit}>
       <div className="brand">
@@ -135,8 +141,6 @@ const Register = () => {
         <input type="password" name="confirmPassword" id="confirmPassword" placeholder='confirm password' value={values.confirmPassword} onChange={handleChange}/>
         <button onClick={handleGenerateOtp}>Generate Otp</button>
         <span > 
-        {/* <Link to="#"  style={{float: 'left'}}> forget Password </Link> 
-        <Link to="/login"  style={{float: 'right'}}> Already Registered  </Link>  */}
         Already Have Account? <Link to='/login'>Login</Link>
         </span>
         </>
@@ -168,8 +172,10 @@ background-color: #131324;
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 10px;
     img{
-        height: 5rem;
+        height: 2.5rem;
+        
     }
     h1{
         color: white;
@@ -185,7 +191,7 @@ background-color: #131324;
         padding: 3rem 5rem;
         input{
             background-color: transparent;
-            padding: 1rem 3rem;
+            padding: 1rem 1rem;
             border: 0.1rem solid #4e0eff;
             border-radius: 0.4rem;
             color: white;
@@ -199,7 +205,7 @@ background-color: #131324;
         button {
             background-color: #997af0;
             color: white;
-            padding: 1rem 2rem;
+            padding: 1rem 1rem;
             border: none;
             font-weight: bold;
             cursor: pointer;

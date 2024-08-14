@@ -35,11 +35,11 @@ const UserPage = () => {
           setProgress(10);
           const base64String = reader.result.split(',')[1]
           if(user ){
-            const {data} = await axios.post(`${setAvtarRoute}/${user._id}`,{
+            const response = await axios.post(`${setAvtarRoute}/${user._id}`,{
                 image: base64String,
             });
             setProgress(50);
-            if(data.isSet){
+            if(response.data.success){
                 dispatch(setUser(({
                   ...user,
                   avtarImage: base64String
