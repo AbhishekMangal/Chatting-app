@@ -163,7 +163,7 @@ const fetchMessage = async () => {
               <div className="avatar">
                 {currentChat.avtarImage?
               <img  src={`data:${getImageMimeType(currentChat.avtarImage)};base64,${currentChat.avtarImage}`} alt="avatar" className="h-12 w-12 rounded-full object-cover"/>
-                : <img src= {null_images} className="h-12 w-12 rounded-full object-cover"/>}
+                : <img src= {null_image} className="h-12 w-12 rounded-full object-cover"/>}
               </div>
               <div className="username">
                 <h3 className="text-white">{currentChat.username}</h3>

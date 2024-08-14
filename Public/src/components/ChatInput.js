@@ -56,7 +56,7 @@ const ChatInput = ({handleSendMsz}) => {
 }
 const Container = styled.div`
 display: grid;
-width: 80%;
+width: 90%;
 grid-template-columns: 5% 95%;
 place-content: center;
 place-items: center;
