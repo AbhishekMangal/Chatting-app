@@ -64,7 +64,7 @@ const UserPage = () => {
   return (
   
     
-    <div className='text-white bg-[#080420] grid grid-rows-[20%_35%_25%_20%]  '>
+    <div className='text-white bg-[#080420] grid grid-rows-[20%_35%_25%_20%] h-[90vh]  '>
          <LoadingBar
         color='#f11946'
         progress={progress}
