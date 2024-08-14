@@ -69,13 +69,13 @@ const dispatch = useDispatch();
     {
         setValues({...values , [e.target.name]: e.target.value});
     }
-    useEffect(()=>
-    {
-        if(localStorage.getItem('authToken'))
-        {
-            navigate('/')
-        }
-    },[user])
+    // useEffect(()=>
+    // {
+    //     if(localStorage.getItem('authToken'))
+    //     {
+    //         navigate('/')
+    //     }
+    // },[user])
       
     
   return (

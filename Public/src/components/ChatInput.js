@@ -56,17 +56,15 @@ const ChatInput = ({handleSendMsz}) => {
 }
 const Container = styled.div`
 display: grid;
-
+width: 80%;
 grid-template-columns: 5% 95%;
 place-content: center;
 place-items: center;
 // background-color: #080420;
 padding: 0 2rem;
-gap: 1rem;
-@media screen and (min-width: 720px) and (max-width: 1080px) {
-  padding: 0 1rem;
-  gap: 1rem;
-}
+gap:1rem;
+
+
 .button-container {
   display: flex;
   align-items: center;
