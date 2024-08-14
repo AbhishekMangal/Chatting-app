@@ -9,8 +9,8 @@ const app = express();
 app.use(express.json({limit: '10mb'}));
 
 app.use(cors({
-  origin : "https://chatting-app-11.onrender.com",
-  // origin: ["https://chatting-app-11.onrender.com", "http://localhost:3000"],
+  // origin : "https://chatting-app-11.onrender.com",
+  origin: ["https://chatting-app-11.onrender.com", "http://localhost:3000"],
   methods: ["GET", "POST"],
   credentials: true
 }));
@@ -36,8 +36,8 @@ connectToMongo(userName, password);
 
 const io = new Server(server, {
   cors: {
-    origin : "https://chatting-app-11.onrender.com",
-    // origin: ["https://chatting-app-11.onrender.com", "http://localhost:3000"],
+    // origin : "https://chatting-app-11.onrender.com",
+    origin: ["https://chatting-app-11.onrender.com", "http://localhost:3000"],
     methods: ["GET", "POST"],
     credentials: true
   }

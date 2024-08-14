@@ -68,11 +68,11 @@ const ChatContainer = ({ socket, notifications, setNotifications, handleChatchan
         }, {});
 
         setGroupedMessages(grouped);
-        setProgress(100);
       } else {
         setIsBlocked(false);
         setGroupedMessages({});
       }
+      setProgress(100);
     }
   };
 
