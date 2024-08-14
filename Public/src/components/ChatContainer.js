@@ -10,7 +10,7 @@ import { GoArrowLeft } from "react-icons/go";
 import { toast, ToastContainer } from "react-toastify";
 import userContext from "../Context/userContext";
 import LoadingBar from "react-top-loading-bar";
-
+import null_image from '../Images/null images.jpg'
 import { FaUserSlash } from "react-icons/fa";
 
 
@@ -161,7 +161,9 @@ const fetchMessage = async () => {
             <div className={`flex items-center gap-4 cursor-pointer ${progress? 'pointer-events-none': ''}`} title="Contact Details" onClick={() => dispatch(setCurrChatDetails(true))}>
               <GoArrowLeft className="text-2xl mx-5 text-white sm:hidden" onClick={() => handleChatchange(null, undefined)} />
               <div className="avatar">
+                {currentChat.avtarImage?
               <img  src={`data:${getImageMimeType(currentChat.avtarImage)};base64,${currentChat.avtarImage}`} alt="avatar" className="h-12 w-12 rounded-full object-cover"/>
+                : <img src= {null_images} className="h-12 w-12 rounded-full object-cover"/>}
               </div>
               <div className="username">
                 <h3 className="text-white">{currentChat.username}</h3>
