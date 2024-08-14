@@ -94,7 +94,7 @@ const Chat = () => {
         progress={progress}
         onLoaderFinished={() => setProgress(0)}
       />
-      <div className="h-[100vh]  w-[]100vh] grid sm:grid-cols-[40%_60%] xl:grid-cols-[25%_75%] w-full bg-[#00000076]  overflow-hidden">
+      <div className="h-[90vh]  w-full grid sm:grid-cols-[40%_60%] xl:grid-cols-[25%_75%] w-full bg-[#00000076]  overflow-hidden">
         {userDetails === true ?  (
           <UserPage/>
 
@@ -121,7 +121,7 @@ const Chat = () => {
 
 const Container = styled.div`
   height: 100vh;
-  width: 100vw;
+  width: 100vw; 
   display: flex;
   flex-direction: column;
   justify-content: center;

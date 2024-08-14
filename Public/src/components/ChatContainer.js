@@ -156,7 +156,7 @@ const fetchMessage = async () => {
         onLoaderFinished={() => setProgress(0)}
       />
       {currentChat && (
-        <div className="grid  grid-rows-[20%,70%,10%] gap-[0.1rem] overflow-hidden h-[100h]">
+        <div className="grid  grid-rows-[15%,75%,10%] gap-[0.1rem] overflow-hidden ">
           <div className="flex justify-between items-center px-8 ">
             <div className={`flex items-center gap-4 cursor-pointer ${progress? 'pointer-events-none': ''}`} title="Contact Details" onClick={() => dispatch(setCurrChatDetails(true))}>
               <GoArrowLeft className="text-2xl mx-5 text-white sm:hidden" onClick={() => handleChatchange(null, undefined)} />
@@ -170,7 +170,7 @@ const fetchMessage = async () => {
               </div>
             </div>
               <FaUserSlash
-              className={`text-2xl mx-5 ${progress? 'pointer-events-none': ''}   ${isBlocked? "text-red-500": "text-white"} cursor-pointer`} 
+              className={`text-2xl mx-5 ${progress? 'pointer-events-none': ''}   ${isBlocked? "text-red-500": "text-[#59dfca]"} cursor-pointer`} 
               onClick={handleBlock}
               title={isBlocked? 'Unblock':'Block'}/>
           </div>

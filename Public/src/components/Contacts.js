@@ -32,7 +32,7 @@ const Contacts = ({ changeChat, notifications , setNotification}) => {
     <>
     
     <Container >
-      <div className='grid grid-rows-[20%,80%] bg-[#080420] overflow-hidden h-[100vh]'>
+      <div className='grid grid-rows-[15%,85%] bg-[#080420] overflow-hidden h-[90vh] '>
       {user  && (
           <div className="header flex justify-between items-center p-4  ">
             <div className='logo h-8 '>
@@ -78,7 +78,7 @@ const Contacts = ({ changeChat, notifications , setNotification}) => {
                       { contact.avtarImage ? (
                       <img  src={`data:${getImageMimeType(contact.avtarImage)};base64,${contact.avtarImage}`} alt="avatar" className="h-12 w-12 rounded-full object-cover"/>
 
-                      ):<img src={null_image} alt="avtar" />
+                      ):<img src={null_image} alt="avtar" className='h-12 w-12 rounded-full object-cover' />
               }
                     </div>
                     <div className="username">

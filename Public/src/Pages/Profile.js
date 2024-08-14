@@ -3,7 +3,7 @@ import React, { useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setCurrChatDetails } from '../Features/chat/ChatSlice'
 import { GoArrowLeft } from 'react-icons/go'
-import { setUserDetails } from '../Features/user/userSlice'
+import { FaUserSlash } from "react-icons/fa";
 import null_image from '../Images/null images.jpg'
 import userContext from '../Context/userContext'
 
@@ -12,8 +12,9 @@ const Profile = () => {
    const dispatch =  useDispatch();
    const {getImageMimeType} = useContext(userContext)
   console.log(currentChat)
+
   return (
-    <div className='text-white bg-[#080420] grid grid-rows-[20%_40%_25%_15%]'>
+    <div className='text-white bg-[#080420] grid grid-rows-[20%_40%_30%_10%]'>
     <div className="flex items-center pt-7 bg-[#08264c5e]" >
       <GoArrowLeft className='text-2xl place-content-center mx-5 cursor-pointer' onClick={()=>dispatch(setCurrChatDetails(false))}/>
       <span className='px-6 font-sans text-xl'>Contact Details</span>
@@ -30,8 +31,7 @@ const Profile = () => {
      <div className='userName  p-2 bg-[#ffffff34] rounded-md  text-center'> Name: {currentChat.username}</div>
      <div className='userEmail  p-2 bg-[#ffffff34] rounded-md text-center'> Email: {currentChat.email}</div>
      <div className='userEmail  p-2 bg-[#ffffff34] rounded-md text-center'> About: Hii! i am using Snappy</div>
-    </div>
-    
+    </div> 
   </div>
   )
 }

@@ -24,7 +24,7 @@ const LogOut = () => {
     }
   return (
 <>
-              <div className='.logout flex justify-center text-white cursor-pointer hover:bg-[#9a86f3] py-3 rounded-lg gap-2 w-full' onClick={handleClick} >
+              <div className='.logout flex justify-center text-white cursor-pointer hover:bg-[#9a86f3] py-3 rounded-lg gap-2 w-full ' onClick={handleClick} >
               <BiPowerOff className='logout-icon mb-1 text-xl text-[#59dfca]'/>
                 <span>Logout</span> 
                  </div> 
