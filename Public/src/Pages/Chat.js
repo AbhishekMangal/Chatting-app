@@ -78,7 +78,7 @@ const Chat = () => {
 
   const handleChatchange = (chat, index) => {
     dispatch(setCurrentChat(chat));  
-    console.log(currentChat, chat)
+ 
     dispatch(setcurrSelected(index));
    setNotifications((prevNotifications) =>
       prevNotifications.filter((notif) => notif.from !== chat._id)
