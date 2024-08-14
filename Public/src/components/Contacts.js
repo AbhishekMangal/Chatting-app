@@ -1,9 +1,8 @@
-import React, {  useContext, useEffect, useState } from 'react';
+import React, {  useContext} from 'react';
 import styled from 'styled-components';
-
 import Logo from '../Assets/logo.svg';
 import { useDispatch, useSelector } from 'react-redux';
-import { setContact, setCurrChatDetails, setCurrentChat, setcurrSelected, setNotifications } from '../Features/chat/ChatSlice';
+import { setCurrChatDetails, setCurrentChat, setcurrSelected } from '../Features/chat/ChatSlice';
 import {  setUserDetails } from '../Features/user/userSlice';
 import null_image from '../Images/null images.jpg'
 import userContext from '../Context/userContext';
@@ -13,8 +12,7 @@ const Contacts = ({ changeChat, notifications , setNotification}) => {
   const{contact, currSelected} = useSelector(state => state.chat)
   const {user} = useSelector(state=> state.user)
   const {getImageMimeType} = useContext(userContext)
-  
-const dispatch = useDispatch();
+  const dispatch = useDispatch();
   
 
   const changeCurrentChat = (index, contact) => {
@@ -24,7 +22,6 @@ const dispatch = useDispatch();
     dispatch(setcurrSelected(index));
     dispatch(setCurrentChat(contact))
     dispatch(setCurrChatDetails(false))
-    console.log(contact)
     changeChat(contact, index);
 
   }; 
@@ -35,11 +32,11 @@ const dispatch = useDispatch();
     <>
     
     <Container >
-      <div className='grid grid-rows-[20%,80%] bg-[#080420] overflow-hidden h-full'>
+      <div className='grid grid-rows-[20%,80%] bg-[#080420] overflow-hidden h-[100vh]'>
       {user  && (
           <div className="header flex justify-between items-center p-4  ">
             <div className='logo h-8 '>
-            <img src={Logo} alt="" className='h-8' />
+            <img src={Logo} alt="Logo" className='h-8' />
             </div>
           
            <div className='title text-slate-300'>
@@ -47,13 +44,20 @@ const dispatch = useDispatch();
             </div>
             <div className="user-profile cursor-pointer">
             <div className="relative group:" onClick={()=> dispatch(setUserDetails(true))}>
-              {user && user.avtarImage !== undefined &&(
-             <img  src={`data:${getImageMimeType(user.avtarImage)};base64,${user.avtarImage}`} alt="avatar" className="h-12 w-12 rounded-full object-cover"/>
-              )}
+              {(user && user.avtarImage !== undefined) ?(
+             <img  
+             src={`data:${getImageMimeType(user.avtarImage)};base64,${user.avtarImage}`} 
+             alt="avatar" 
+             className="h-12 w-12 rounded-full object-cover"
+             title='profile'
+             />
+              ):
+              (
+              <img src={null_image} className="h-12 w-12 rounded-full object-cover"/>
+              )
+            }
             </div>
-           
           </div>
-            
           </div>
         )}
           <div className="contacts mt-2 bg-[#000223]">
@@ -82,7 +86,7 @@ const dispatch = useDispatch();
                     
                     </div>
                     {unreadMessages > 0   && (
-                      <div className="notification">
+                      <div className="notification rounded-full object-cover flex justify-center bg-red-600 h-7 w-7 items-center text-white ml-auto">
                         {unreadMessages}
                       </div>
                     )}
@@ -134,13 +138,7 @@ const Container = styled.div`
           color: white;
         }
       }
-      .notification {
-        background-color: red;
-        color: white;
-        border-radius: 50%;
-        padding: 0.2rem 0.5rem;
-        margin-left: auto;
-      }
+     
     }
     .selected {
       background-color: #9a86f3;

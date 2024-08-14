@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setContact, setCurrentChat, setcurrSelected } from "../Features/chat/ChatSlice";
 import Profile from "./Profile";
 import UserPage from "./UserPage";
+import LoadingBar from "react-top-loading-bar";
 
 const Chat = () => {
   const socket = useRef();
@@ -22,6 +23,7 @@ const Chat = () => {
   const dispatch = useDispatch();
   const{ currentChat, currChatDetails, currSelected} = useSelector(state => state.chat);
   const{userDetails} = useSelector(state => state.user);
+  const [progress, setProgress] = useState(0);
 
   const{user} = useSelector(state => state.user)
 
@@ -29,8 +31,9 @@ const Chat = () => {
   
   
   const getUsers = async () => {
+    setProgress(20);
     const response = await getuser();
- 
+    setProgress(90);
     if (response && response.data.User && response.data.User.isAvtarImage) {
     
       const response = await axios.get(allUserRoute, {  
@@ -44,6 +47,7 @@ const Chat = () => {
     else {
       navigate("/login");
     }
+    setProgress(100);
   };
 
 
@@ -85,8 +89,12 @@ const Chat = () => {
 
   return (
     <Container>
-      
-      <div className="h-full  w-full grid sm:grid-cols-[40%_60%] xl:grid-cols-[25%_75%] w-full bg-[#00000076] m-8 overflow-hidden">
+        <LoadingBar
+        color='#f11946'
+        progress={progress}
+        onLoaderFinished={() => setProgress(0)}
+      />
+      <div className="h-[100vh]  w-[]100vh] grid sm:grid-cols-[40%_60%] xl:grid-cols-[25%_75%] w-full bg-[#00000076]  overflow-hidden">
         {userDetails === true ?  (
           <UserPage/>
 

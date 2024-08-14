@@ -1,13 +1,16 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { setCurrChatDetails } from '../Features/chat/ChatSlice'
 import { GoArrowLeft } from 'react-icons/go'
 import { setUserDetails } from '../Features/user/userSlice'
+import null_image from '../Images/null images.jpg'
+import userContext from '../Context/userContext'
 
 const Profile = () => {
     const {currentChat, currChatDetails} = useSelector(state =>state.chat)
    const dispatch =  useDispatch();
+   const {getImageMimeType} = useContext(userContext)
   console.log(currentChat)
   return (
     <div className='text-white bg-[#080420] grid grid-rows-[20%_40%_25%_15%]'>
@@ -16,7 +19,11 @@ const Profile = () => {
       <span className='px-6 font-sans text-xl'>Contact Details</span>
     </div>
     <div className=" flex items-end justify-center pb-2 ]">
-    <img src={`data:image/jpg+svg+xml;base64,${currentChat.avtarImage}`} alt="avtar"  className='h-52'  />
+    {currentChat.avtarImage ?(
+            <img src={`data:${getImageMimeType(currentChat.avtarImage)};base64,${currentChat.avtarImage}`} alt="avatar" className="h-52 w-52 rounded-full object-cover" />
+         ): 
+         <img src={null_image} className='h-48 w-48 rounded-full object-cover'/>
+        }
     
     </div>
     <div className="b rounded flex flex-col justify-evenly gap-2 px-3">

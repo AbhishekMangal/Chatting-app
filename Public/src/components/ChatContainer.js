@@ -1,29 +1,28 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import LogOut from "./LogOut";
 import ChatInput from "./ChatInput";
 import { blockUser, getAllMessageRoute, sendMessageRoute, unBlockUser } from "../util/ApiRoute";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { setCurrChatDetails, setCurrentChat } from "../Features/chat/ChatSlice";
+import { setCurrChatDetails } from "../Features/chat/ChatSlice";
 import { GoArrowLeft } from "react-icons/go";
-import { MdBlockFlipped } from "react-icons/md";
+
 import { toast, ToastContainer } from "react-toastify";
 import userContext from "../Context/userContext";
+import LoadingBar from "react-top-loading-bar";
 
-const ChatContainer = ({
-  socket,
-  notifications,
-  setNotifications,
-  handleChatchange,
-}) => {
+import { FaUserSlash } from "react-icons/fa";
+
+
+
+const ChatContainer = ({socket,notifications,setNotifications,handleChatchange,}) => {
   const { currentChat } = useSelector((state) => state.chat);
   const { user } = useSelector((state) => state.user);
   const [messages, setMessage] = useState([]);
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const [isBlocked, setIsBlocked] = useState(false);
   const {getImageMimeType} = useContext(userContext)
+  const [progress, setProgress] = useState(0)
   const scrollRef = useRef();
   const toastOption = {
     position: "top-right",
@@ -36,24 +35,29 @@ const ChatContainer = ({
   const dispatch = useDispatch();
   useEffect(() => {
     if (user && currentChat) {
+      
       fetchMessage();
+   
     }
   }, [currentChat]);
 
-  const fetchMessage = async () => {
-    if (currentChat) {
+const fetchMessage = async () => {
+  setProgress(10);
+  if (currentChat) 
+  {
       const response = await axios.post(getAllMessageRoute, {
         from: user._id,
         to: currentChat._id,
       });
-      setMessage(response.data);
-      console.log(response.data)
-      if(messages.length>0)
-        {
+      setProgress(50);
+     
+      
+    if(response.data.length>0)
+    {
       const lastmess = response.data[response.data.length -1];
-  
       if(lastmess.canSend === false)
       {  
+        response.data.pop();
         setIsBlocked(true);
       }
       else
@@ -65,8 +69,10 @@ const ChatContainer = ({
     {
       setIsBlocked(false);
     }
-    }
-  };
+    setMessage(response.data);
+    setProgress(100)
+  }
+};
 
   const handleSendMsz = async (msg) => {
     socket.current.emit("send-msg", {
@@ -83,41 +89,31 @@ const ChatContainer = ({
     msgs.push({ fromSelf: true, message: msg });
     setMessage(msgs);
   };
+
   const handleBlock = async (msg)=>
   {
-    if(isBlocked)
-    {
-      const response = await axios.post(unBlockUser, {
-        from: user._id,
-        to: currentChat._id,
-      })
-    
-      if(response.data.success)
-      {
-        toast.info("UnBlocked Successfully", toastOption)
-        setIsBlocked(false);
+   
+    const action = isBlocked ? "Unblock" : "Block";
+    const message = isBlocked ? `Are you sure you want to unblock ${currentChat.username}?` : `Are you sure you want to block ${currentChat.username}?`;
+    if (window.confirm(message)) {
+      try {
+        setProgress(20);
+        const response = await axios.post(isBlocked ? unBlockUser : blockUser, {
+          from: user._id,
+          to: currentChat._id,
+        });
+        setProgress(50);
+        if (response.data.success) {
+          toast[isBlocked ? "info" : "warning"](response.data.msz, toastOption);
+          setIsBlocked(!isBlocked);
+        } else {
+          toast.error(response.data.msz, toastOption);
+        }
+
+      } catch (error) {
+        console.error("Error blocking/unblocking user", error);
       }
-      else
-      {
-        toast.error("Action can't be performed", toastOption)
-      }
-    }
-    else
-    {
-      const response = await axios.post(blockUser, {
-        from: user._id,
-        to: currentChat._id,
-      })
-      console.log(response.data)
-      
-      if(response.data.success)
-      {
-        toast.warning(response.data.msz, toastOption)
-        setIsBlocked(true);
-      }
-      else{
-        toast.error(response.data.msz, toastOption)
-      }
+      setProgress(100);
     }
   }
 
@@ -142,8 +138,8 @@ const ChatContainer = ({
       arrivalMessage.from === currentChat._id
     ) {
       setMessage((prev) => [...prev, arrivalMessage]);
-      setNotifications(
-        notifications.filter((notif) => notif.from !== currentChat._id)
+      setNotifications((prev)=>
+        prev.filter((notif) => notif.from !== currentChat._id)
       );
     }
   }, [arrivalMessage]);
@@ -154,10 +150,15 @@ const ChatContainer = ({
 
   return (
     <>
+     <LoadingBar
+        color='#f11946'
+        progress={progress}
+        onLoaderFinished={() => setProgress(0)}
+      />
       {currentChat && (
-        <div className="grid  grid-rows-[20%,70%,10%] gap-[0.1rem] overflow-hidden h-[85vh]">
+        <div className="grid  grid-rows-[20%,70%,10%] gap-[0.1rem] overflow-hidden h-[100h]">
           <div className="flex justify-between items-center px-8 ">
-            <div className="flex items-center gap-4 cursor-pointer" onClick={() => dispatch(setCurrChatDetails(true))}>
+            <div className={`flex items-center gap-4 cursor-pointer ${progress? 'pointer-events-none': ''}`} title="Contact Details" onClick={() => dispatch(setCurrChatDetails(true))}>
               <GoArrowLeft className="text-2xl mx-5 text-white sm:hidden" onClick={() => handleChatchange(null, undefined)} />
               <div className="avatar">
               <img  src={`data:${getImageMimeType(currentChat.avtarImage)};base64,${currentChat.avtarImage}`} alt="avatar" className="h-12 w-12 rounded-full object-cover"/>
@@ -168,7 +169,10 @@ const ChatContainer = ({
               <div>
               </div>
             </div>
-              <MdBlockFlipped className={`text-2xl mx-5 ${isBlocked? "text-red-500": "text-white"} cursor-pointer`} onClick={handleBlock}/>
+              <FaUserSlash
+              className={`text-2xl mx-5 ${progress? 'pointer-events-none': ''}   ${isBlocked? "text-red-500": "text-white"} cursor-pointer`} 
+              onClick={handleBlock}
+              title={isBlocked? 'Unblock':'Block'}/>
           </div>
           <div className="chat-messages flex flex-col gap-4 p-4 overflow-auto ">
             {messages.map((message) => {
