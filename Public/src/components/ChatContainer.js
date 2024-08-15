@@ -12,7 +12,7 @@ import LoadingBar from "react-top-loading-bar";
 import null_image from '../Images/null images.jpg';
 import { FaUserSlash } from "react-icons/fa";
 import sendMsz from "../Sound/send.mp3"
-import recieveMsz from '../Sound/recieve.wav'
+
 import CryptoJS from "crypto-js";
 
 const ChatContainer = ({ socket, notifications, setNotifications, handleChatchange }) => {
@@ -34,7 +34,7 @@ const ChatContainer = ({ socket, notifications, setNotifications, handleChatchan
   };
   const secret = process.env.REACT_APP_SECRET_KEY;
   const sendmsz = new Audio(sendMsz);
-  const recieveMessage = new Audio(recieveMsz);
+ 
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -187,7 +187,7 @@ const ChatContainer = ({ socket, notifications, setNotifications, handleChatchan
   
 
   useEffect(() => {
-    if (arrivalMessage )
+    if (arrivalMessage ){
       if(currentChat && arrivalMessage.from === currentChat._id) {
       setGroupedMessages(prev => {
         const date = new Date(arrivalMessage.createdAt).toLocaleDateString('en-GB', {
@@ -207,10 +207,8 @@ const ChatContainer = ({ socket, notifications, setNotifications, handleChatchan
         prev.filter((notif) => notif.from !== currentChat._id)
       );
     }
-    if(arrivalMessage && (!currentChat || arrivalMessage.from !== currentChat._id))
-    {
-      recieveMessage.play();
-    }
+    
+  }
   }, [arrivalMessage]);
 
   useEffect(() => {

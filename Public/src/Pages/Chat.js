@@ -13,7 +13,7 @@ import { setContact, setCurrentChat, setcurrSelected } from "../Features/chat/Ch
 import Profile from "./Profile";
 import UserPage from "./UserPage";
 import LoadingBar from "react-top-loading-bar";
-
+import recieveMsz from '../Sound/recieve.wav'
 const Chat = () => {
   const socket = useRef();
   const { getuser } = useContext(userContext);
@@ -26,7 +26,7 @@ const Chat = () => {
   const [progress, setProgress] = useState(0);
 
   const{user} = useSelector(state => state.user)
-
+  const recieveMessage = new Audio(recieveMsz);
   
   
   
@@ -69,6 +69,12 @@ const Chat = () => {
       socket.current.emit("add-user", user._id);
       socket.current.on("new-message", (data) => {
         setNotifications((prevNotifications) => [...prevNotifications, data]);
+        console.log(data.from)
+        console.log(currentChat)
+        if(currentChat == null || data.from != currentChat._id)
+        {
+          recieveMessage.play();
+        }
       }); 
      
       
