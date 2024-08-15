@@ -101,7 +101,7 @@ const ChatContainer = ({ socket, notifications, setNotifications, handleChatchan
       from: user._id,
       message: encryptedMsg,
     });
-    
+    console.log(currentChat)
     await axios.post(sendMessageRoute, {
       from: user._id,
       to: currentChat._id,
@@ -149,23 +149,42 @@ const ChatContainer = ({ socket, notifications, setNotifications, handleChatchan
   };
 
   useEffect(() => {
-    if (socket.current) {
-      socket.current.on("msg-recieve", (data) => {
-        const date = new Date(data.createdAt).toLocaleDateString('en-GB', {
+    const handleMessageReceive = (data) => {
+      const date = new Date(data.createdAt).toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
+  
+      setArrivalMessage(prev => {
+        const newDate = new Date(data.createdAt).toLocaleDateString('en-GB', {
           day: 'numeric',
           month: 'long',
           year: 'numeric'
         });
-        setArrivalMessage({
+  
+        return {
           fromSelf: false,
           message: data.message,
           from: data.from,
-          createdAt: new Date().toISOString(),
-          date,
-        });
+          createdAt: new Date().toISOString(), // Use the received createdAt instead of new Date().toISOString()
+          date: newDate,
+        };
       });
+    };
+  
+    if (socket.current) {
+      socket.current.on("msg-recieve", handleMessageReceive);
     }
+  
+    // Cleanup the event listener when the component unmounts
+    return () => {
+      if (socket.current) {
+        socket.current.off("msg-recieve", handleMessageReceive);
+      }
+    };
   }, [currentChat]);
+  
 
   useEffect(() => {
     if (arrivalMessage )
