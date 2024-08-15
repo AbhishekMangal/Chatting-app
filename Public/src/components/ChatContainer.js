@@ -91,7 +91,7 @@ const ChatContainer = ({ socket, notifications, setNotifications, handleChatchan
       from: user._id,
       message: msg,
     });
-    sendmsz.play();
+    
     await axios.post(sendMessageRoute, {
       from: user._id,
       to: currentChat._id,
@@ -111,6 +111,7 @@ const ChatContainer = ({ socket, notifications, setNotifications, handleChatchan
         [todayDate]: [...(prev[todayDate] || []), { fromSelf: true, message: msg, createdAt: new Date().toISOString() }],
       };
     });
+    sendmsz.play();
   };
 
   const handleBlock = async () => {
