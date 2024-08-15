@@ -11,6 +11,8 @@ import userContext from "../Context/userContext";
 import LoadingBar from "react-top-loading-bar";
 import null_image from '../Images/null images.jpg';
 import { FaUserSlash } from "react-icons/fa";
+import sendMsz from "../Sound/send.mp3"
+import recieveMsz from '../Sound/recieve.wav'
 
 const ChatContainer = ({ socket, notifications, setNotifications, handleChatchange }) => {
   const { currentChat } = useSelector((state) => state.chat);
@@ -29,6 +31,8 @@ const ChatContainer = ({ socket, notifications, setNotifications, handleChatchan
     draggable: true,
     theme: "dark"
   };
+  const sendmsz = new Audio(sendMsz);
+  const recieveMessage = new Audio(recieveMsz);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -87,6 +91,7 @@ const ChatContainer = ({ socket, notifications, setNotifications, handleChatchan
       from: user._id,
       message: msg,
     });
+    sendmsz.play();
     await axios.post(sendMessageRoute, {
       from: user._id,
       to: currentChat._id,
@@ -144,7 +149,7 @@ const ChatContainer = ({ socket, notifications, setNotifications, handleChatchan
           fromSelf: false,
           message: data.message,
           from: data.from,
-          createdAt: data.createdAt,
+          createdAt: new Date().toISOString(),
           date,
         });
       });
@@ -152,7 +157,8 @@ const ChatContainer = ({ socket, notifications, setNotifications, handleChatchan
   }, [currentChat]);
 
   useEffect(() => {
-    if (arrivalMessage && currentChat && arrivalMessage.from === currentChat._id) {
+    if (arrivalMessage )
+      if(currentChat && arrivalMessage.from === currentChat._id) {
       setGroupedMessages(prev => {
         const date = new Date(arrivalMessage.createdAt).toLocaleDateString('en-GB', {
           day: 'numeric',
@@ -170,6 +176,10 @@ const ChatContainer = ({ socket, notifications, setNotifications, handleChatchan
       setNotifications(prev =>
         prev.filter((notif) => notif.from !== currentChat._id)
       );
+    }
+    if(arrivalMessage && (!currentChat || arrivalMessage.from !== currentChat._id))
+    {
+      recieveMessage.play();
     }
   }, [arrivalMessage]);
 
