@@ -13,6 +13,7 @@ import null_image from '../Images/null images.jpg';
 import { FaUserSlash } from "react-icons/fa";
 import sendMsz from "../Sound/send.mp3"
 import recieveMsz from '../Sound/recieve.wav'
+import CryptoJS from "crypto-js";
 
 const ChatContainer = ({ socket, notifications, setNotifications, handleChatchange }) => {
   const { currentChat } = useSelector((state) => state.chat);
@@ -31,6 +32,7 @@ const ChatContainer = ({ socket, notifications, setNotifications, handleChatchan
     draggable: true,
     theme: "dark"
   };
+  const secret = process.env.REACT_APP_SECRET_KEY;
   const sendmsz = new Audio(sendMsz);
   const recieveMessage = new Audio(recieveMsz);
   const dispatch = useDispatch();
@@ -84,18 +86,26 @@ const ChatContainer = ({ socket, notifications, setNotifications, handleChatchan
     const options = { hour: '2-digit', minute: '2-digit' };
     return new Date(dateString).toLocaleTimeString([], options);
   };
+  const decryption = (msg)=>{
+    const secretKey = secret; // Must match the key used for encryption
+      const bytes = CryptoJS.AES.decrypt(msg, secretKey);
+      const decryptedMsg = bytes.toString(CryptoJS.enc.Utf8);
+      return decryptedMsg;
+  }
 
   const handleSendMsz = async (msg) => {
+    const secretKey = secret; 
+    const encryptedMsg = CryptoJS.AES.encrypt(msg, secretKey).toString();
     socket.current.emit("send-msg", {
       to: currentChat._id,
       from: user._id,
-      message: msg,
+      message: encryptedMsg,
     });
     
     await axios.post(sendMessageRoute, {
       from: user._id,
       to: currentChat._id,
-      message: msg,
+      message: encryptedMsg,
     });
     setGroupedMessages(prev => {
       const todayDate = new Date().toLocaleDateString('en-GB', {
@@ -108,7 +118,7 @@ const ChatContainer = ({ socket, notifications, setNotifications, handleChatchan
       }
       return {
         ...prev,
-        [todayDate]: [...(prev[todayDate] || []), { fromSelf: true, message: msg, createdAt: new Date().toISOString() }],
+        [todayDate]: [...(prev[todayDate] || []), { fromSelf: true, message: encryptedMsg, createdAt: new Date().toISOString() }],
       };
     });
     sendmsz.play();
@@ -192,7 +202,7 @@ const ChatContainer = ({ socket, notifications, setNotifications, handleChatchan
     <>
       <LoadingBar
         color='#f11946'
-        progress={progress}
+        progress={progress} 
         onLoaderFinished={() => setProgress(0)}
       />
       {currentChat && (
@@ -232,7 +242,7 @@ const ChatContainer = ({ socket, notifications, setNotifications, handleChatchan
                     <div
                       className={`content max-w-[80%] md:min-w-[20%] md:max-w-[60%] min-w-[35%] break-words p-4 text-[1.1rem] rounded-xl ${message.fromSelf ? "bg-[#4f04ff21]" : "bg-[#9900ff20]"}`}
                     >
-                      <p className="message text-white">{message.message}</p>
+                      <p className="message text-white">{decryption(message.message)}</p>
                       <p className="time text-right mt-2 text-xs text-[#b0b0b0] italic">{formatTime(message.createdAt)}</p>
                     </div>
                   </div>

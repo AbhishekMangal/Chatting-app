@@ -56,8 +56,7 @@ const acceptRequest = async(req, res, next)=>
             if(req_delete)
             {
                 const data = await friendsModel.create({
-                    myId: request.from,
-                    friendID: request.to,
+                   users: [request.from , request.to]
                 });
                 if (data) {
                     return res.json({ success: true, msz: "Friend Added and Request Deleted Successfully" });

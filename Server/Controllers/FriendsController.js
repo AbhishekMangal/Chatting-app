@@ -4,11 +4,9 @@ const userModel = require("../model/userModel");
 module.exports.addFriendRoute = async(req, res, next)=>
 {
     try {
-        const {myId, friendID} =  req.body;
+        const {from, to} =  req.body;
         const data = await friendsModel.create({
-            myId: myId,
-            friendID: friendID,
-            
+            users: [from, to]
         })
         if(data) return res.json({success: true, msz: "Friend Added Successfully"});
         return res.json({success: false , msz: 'Friends not Added'});
