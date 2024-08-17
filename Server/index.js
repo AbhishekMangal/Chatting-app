@@ -7,8 +7,8 @@ const { timeStamp, time } = require('console');
 
 const app = express();
 app.use(express.json({limit: '10mb'}));
-const ori = ["https://chatting-app-11.onrender.com", "http://localhost:3000"];
-// const ori = "https://chatting-app-11.onrender.com";
+// const ori = ["https://chatting-app-11.onrender.com", "http://localhost:3000"];
+const ori = "https://chatting-app-11.onrender.com";
 
 app.use(cors({
   // origin : "https://chatting-app-11.onrender.com",
