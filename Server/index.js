@@ -48,8 +48,12 @@ const io = new Server(server, {
 global.onlineUsers = new Map();
 
 io.on("connection", (socket) => {
+  socket.emit("current-online-users", Array.from((new Map).keys()));
   socket.on("add-user", (userId) => {
+
     onlineUsers.set(userId, socket.id);
+
+
     io.emit("user-online", { userId });
     
   });

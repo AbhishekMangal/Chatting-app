@@ -10,6 +10,7 @@ import ChatContainer from "../components/ChatContainer";
 import io from "socket.io-client";
 import { useDispatch, useSelector } from "react-redux";
 import { setContact, setCurrentChat, setcurrSelected } from "../Features/chat/ChatSlice";
+import { setOnlineUsers } from "../Features/user/userSlice";
 import Profile from "./Profile";
 import UserPage from "./UserPage";
 import LoadingBar from "react-top-loading-bar";
@@ -51,7 +52,27 @@ const Chat = () => {
   };
 
 
-  // if not login then nvaigate
+  useEffect(()=>
+  {
+    if(socket.current)
+    {
+      socket.current.on("current-online-users",(users)=>
+        {
+          dispatch(setOnlineUsers(new Set(users)));
+        }
+      )
+      
+    }
+    return ()=>{
+      if(socket.current){
+    socket.current.on("current-online-users",(users)=>
+      {
+        dispatch(setOnlineUsers(new Set(users)));
+      }
+
+    )}
+  }
+  }, [socket])
   useEffect(() => {
 
     if (!localStorage.getItem("authToken")) {
