@@ -47,7 +47,8 @@ module.exports.getAllMessage = async(req, res, next)=>
                 fromSelf: msg.sender.toString() === from,
                 message: msg.message.text,
                 canSend: msg.canSend,
-                createdAt: msg.createdAt
+                createdAt: msg.createdAt,
+                status: msg.status
             };
     });
     
@@ -107,6 +108,18 @@ module.exports.unBlock = async(req, res, next)=>
         }
         return res.json({success: false ,msz: "You can't perform this action"})
     } catch (error) {
-        
+    next();
+    }
+};
+module.exports.seenMessage = async(req, res, next)=>
+{
+    try{
+        const {messageId} = req.body;
+        await MessageModel.findByIdAndUpdate(messageId,{
+            $set: {status: 'seen'}
+        })
+        res.json({success: true , msz:"seen Successfully"})
+    }catch(error){
+        next();
     }
 }

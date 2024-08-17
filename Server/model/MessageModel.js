@@ -16,6 +16,11 @@ const messageSchema = new mongoose.Schema({
     canSend :{
         type : Boolean,
         default: true,
+    },
+    status: {
+        type: String,
+        enum: ['sent',' delievered', 'seend'],
+        default: 'sent',
     }
     },
     

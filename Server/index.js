@@ -7,8 +7,8 @@ const { timeStamp, time } = require('console');
 
 const app = express();
 app.use(express.json({limit: '10mb'}));
-// const ori = ["https://chatting-app-11.onrender.com", "http://localhost:3000"];
-const ori = "https://chatting-app-11.onrender.com";
+const ori = ["https://chatting-app-11.onrender.com", "http://localhost:3000"];
+// const ori = "https://chatting-app-11.onrender.com";
 
 app.use(cors({
   // origin : "https://chatting-app-11.onrender.com",
@@ -50,8 +50,18 @@ global.onlineUsers = new Map();
 io.on("connection", (socket) => {
   socket.on("add-user", (userId) => {
     onlineUsers.set(userId, socket.id);
+    io.emit("user-online", { userId });
+    
   });
 
+  socket.on("disconnect", () => {
+    onlineUsers.forEach((socketId, userId) => {
+      if (socketId === socket.id) {
+        onlineUsers.delete(userId);
+        io.emit("user-offline", { userId }); // Notify all clients about the offline status
+      }
+    });
+  });
   socket.on("send-msg", (data) => {
     const sendUserSocket = onlineUsers.get(data.to);
     if (sendUserSocket) {
@@ -60,4 +70,17 @@ io.on("connection", (socket) => {
       socket.to(sendUserSocket).emit("new-message", { from: data.from, message: data.message });
     }
   });
+
+
+
+
+  socket.on("seen",({messageId, from})=>{
+  {
+    const sendUserSocket = onlineUsers.get(from)
+    if(sendUserSocket)
+    {
+      socket.to(sendUserSocket).emit("seen", {messageId})
+    }
+  }
+})
 });

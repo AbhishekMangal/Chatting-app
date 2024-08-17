@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import ChatInput from "./ChatInput";
-import { blockUser, getAllMessageRoute, sendMessageRoute, unBlockUser } from "../util/ApiRoute";
+import { blockUser, getAllMessageRoute, seenMessageRoute, sendMessageRoute, unBlockUser } from "../util/ApiRoute";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,6 +23,8 @@ const ChatContainer = ({ socket, notifications, setNotifications, handleChatchan
   const [isBlocked, setIsBlocked] = useState(false);
   const { getImageMimeType } = useContext(userContext);
   const [progress, setProgress] = useState(0);
+  const [onlineUsers, setOnlineUsers] = useState(new Set());
+  const [isUserOnline, setIsUserOnline] = useState(false);
   const scrollRef = useRef();
   const toastOption = {
     position: "top-right",
@@ -40,8 +42,9 @@ const ChatContainer = ({ socket, notifications, setNotifications, handleChatchan
   useEffect(() => {
     if (user && currentChat) {
       fetchMessage();
+      setIsUserOnline(onlineUsers.has(currentChat._id))
     }
-  }, [currentChat]);
+  }, [currentChat,onlineUsers]);
 
   const fetchMessage = async () => {
     setProgress(10);
@@ -93,6 +96,8 @@ const ChatContainer = ({ socket, notifications, setNotifications, handleChatchan
       return decryptedMsg;
   }
 
+
+  // For sending Message
   const handleSendMsz = async (msg) => {
     const secretKey = secret; 
     const encryptedMsg = CryptoJS.AES.encrypt(msg, secretKey).toString();
@@ -124,6 +129,9 @@ const ChatContainer = ({ socket, notifications, setNotifications, handleChatchan
     sendmsz.play();
   };
 
+
+  // For handle Block Functionality
+
   const handleBlock = async () => {
     const action = isBlocked ? "Unblock" : "Block";
     const message = isBlocked ? `Are you sure you want to unblock ${currentChat.username}?` : `Are you sure you want to block ${currentChat.username}?`;
@@ -148,7 +156,12 @@ const ChatContainer = ({ socket, notifications, setNotifications, handleChatchan
     }
   };
 
+  
+
+
+  // Handle Message recieving
   useEffect(() => {
+
     const handleMessageReceive = (data) => {
       const date = new Date(data.createdAt).toLocaleDateString('en-GB', {
         day: 'numeric',
@@ -212,8 +225,43 @@ const ChatContainer = ({ socket, notifications, setNotifications, handleChatchan
   }, [arrivalMessage]);
 
   useEffect(() => {
-    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [groupedMessages]);
+    // Handle when a user comes online
+    const handleUserOnline = ({ userId }) => {
+      
+      setOnlineUsers(prev => new Set(prev).add(userId));
+    };
+  
+
+
+    // Handle when a user goes offline
+    const handleUserOffline = ({ userId }) => {
+      setOnlineUsers(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(userId);
+        return newSet;
+      });
+    };
+
+    if (socket.current) {
+      socket.current.on("user-online", handleUserOnline);
+      socket.current.on("user-offline", handleUserOffline);
+    }
+
+    return () => {
+      if (socket.current) {
+        socket.current.off("user-online", handleUserOnline);
+        socket.current.off("user-offline", handleUserOffline);
+      }
+    };
+  }, [socket]);
+
+
+  
+    useEffect(() => {
+      scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+      
+    }, [groupedMessages]);
+  
 
   return (
     <>
@@ -234,16 +282,22 @@ const ChatContainer = ({ socket, notifications, setNotifications, handleChatchan
                   <img src={null_image} className="h-12 w-12 rounded-full object-cover" />
                 )}
               </div>
-              <div className="username">
+              <div className="username flex flex-col justify-center">
                 <h3 className="text-white">{currentChat.username}</h3>
+                <p className="text-xs text-gray-500">
+                  {isBlocked?'Blocked': isUserOnline? 'Online': 'Offline'}
+                </p>
               </div>
             </div>
+            <button className="ml-auto p-2 text-gray-500"  onClick={handleBlock}>
             <FaUserSlash
               className={`text-2xl mx-5 ${progress ? 'pointer-events-none' : ''} ${isBlocked ? "text-red-500" : "text-[#59dfca]"} cursor-pointer`}
-              onClick={handleBlock}
+             
               title={isBlocked ? 'Unblock' : 'Block'}
             />
-          </div>
+            {isBlocked ? 'Unblock' : ''}
+            </button>
+          </div> 
           <div className="chat-messages flex flex-col gap-4 p-4 overflow-auto">
             {Object.keys(groupedMessages).map((date) => (
               <div key={date}>
@@ -260,7 +314,21 @@ const ChatContainer = ({ socket, notifications, setNotifications, handleChatchan
                       className={`content max-w-[80%] md:min-w-[20%] md:max-w-[60%] min-w-[35%] break-words p-4 text-[1.1rem] rounded-xl ${message.fromSelf ? "bg-[#4f04ff21]" : "bg-[#9900ff20]"}`}
                     >
                       <p className="message text-white">{decryption(message.message)}</p>
-                      <p className="time text-right mt-2 text-xs text-[#b0b0b0] italic">{formatTime(message.createdAt)}</p>
+                      <div className="flex gap-1 justify-end">
+                      <div>
+                      <p className="time text-right mt-2 text-xs pr-1 mr-1 text-[#b0b0b0] italic">{formatTime(message.createdAt)}
+                          
+                      </p> </div>
+                        <div className={`text-sm gap-0 ${message.seen?'text-[#9a86f3]':'text-gray-500 '}`}>
+                          {message.fromSelf && 
+                               <> &#10004; </>
+                              }
+                          {message.fromSelf && message.seen && 
+                               <> &#10004; </>
+                          }
+                          </div>
+                     
+                      </div>
                     </div>
                   </div>
                 ))}
