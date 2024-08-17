@@ -10,7 +10,7 @@ import ChatContainer from "../components/ChatContainer";
 import io from "socket.io-client";
 import { useDispatch, useSelector } from "react-redux";
 import { setContact, setCurrentChat, setcurrSelected } from "../Features/chat/ChatSlice";
-import { setOnlineUsers } from "../Features/user/userSlice";
+
 import Profile from "./Profile";
 import UserPage from "./UserPage";
 import LoadingBar from "react-top-loading-bar";
@@ -25,6 +25,7 @@ const Chat = () => {
   const{ currentChat, currChatDetails, currSelected} = useSelector(state => state.chat);
   const{userDetails} = useSelector(state => state.user);
   const [progress, setProgress] = useState(0);
+  const [onlineUsers, setOnlineUsers] = useState(new Set());
 
   const{user} = useSelector(state => state.user)
   const recieveMessage = new Audio(recieveMsz);
@@ -52,27 +53,22 @@ const Chat = () => {
   };
 
 
-  useEffect(()=>
-  {
-    if(socket.current)
-    {
-      socket.current.on("current-online-users",(users)=>
-        {
-          dispatch(setOnlineUsers(new Set(users)));
-        }
-      )
-      
-    }
-    return ()=>{
-      if(socket.current){
-    socket.current.on("current-online-users",(users)=>
-      {
-        dispatch(setOnlineUsers(new Set(users)));
-      }
+  useEffect(() => {
+    if (socket.current) {
+      const handleCurrentOnlineUsers = (users) => {
+        setOnlineUsers(new Set(users));
+      };
 
-    )}
-  }
-  }, [socket])
+      socket.current.on("current-online-users", handleCurrentOnlineUsers);
+
+      // Cleanup function to remove listener on component unmount
+      return () => {
+        if (socket.current) {
+          socket.current.off("current-online-users", handleCurrentOnlineUsers);
+        }
+      };
+    }
+  }, [ socket]);
   useEffect(() => {
 
     if (!localStorage.getItem("authToken")) {
@@ -138,7 +134,10 @@ const Chat = () => {
         ) : currChatDetails ?(<Profile/>) : (
           
            <div className={`${currSelected !== undefined? 'contents':'hidden'} sm:contents`}> 
-           <ChatContainer socket={socket} notifications={notifications} setNotifications={setNotifications} handleChatchange={handleChatchange}/> 
+           <ChatContainer socket={socket} notifications={notifications} setNotifications={setNotifications} handleChatchange={handleChatchange}
+           onlineUsers={onlineUsers}
+           setOnlineUsers={setOnlineUsers}
+           /> 
              </div>
             )}
       </div>

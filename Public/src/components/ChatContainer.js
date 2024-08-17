@@ -14,17 +14,16 @@ import { FaUserSlash } from "react-icons/fa";
 import sendMsz from "../Sound/send.mp3"
 
 import CryptoJS from "crypto-js";
-import { setOnlineUsers } from "../Features/user/userSlice";
 
-const ChatContainer = ({ socket, notifications, setNotifications, handleChatchange }) => {
+const ChatContainer = ({ socket, notifications, setNotifications, handleChatchange,onlineUsers,setOnlineUsers }) => {
   const { currentChat } = useSelector((state) => state.chat);
-  const { user, onlineUsers } = useSelector((state) => state.user);
+  const { user } = useSelector((state) => state.user);
   const [groupedMessages, setGroupedMessages] = useState({});
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const [isBlocked, setIsBlocked] = useState(false);
   const { getImageMimeType } = useContext(userContext);
   const [progress, setProgress] = useState(0);
- 
+
   const [isUserOnline, setIsUserOnline] = useState(false);
   const scrollRef = useRef();
   const toastOption = {
@@ -40,7 +39,12 @@ const ChatContainer = ({ socket, notifications, setNotifications, handleChatchan
  
   const dispatch = useDispatch();
 
-  
+  useEffect(() => {
+    if (user && currentChat) {
+      fetchMessage();
+      setIsUserOnline(onlineUsers.has(currentChat._id))
+    }
+  }, [currentChat,onlineUsers]);
 
   const fetchMessage = async () => {
     setProgress(10);
@@ -221,28 +225,21 @@ const ChatContainer = ({ socket, notifications, setNotifications, handleChatchan
   }, [arrivalMessage]);
 
   useEffect(() => {
-    if (user && currentChat) {
-      fetchMessage();
-      dispatch(setIsUserOnline(onlineUsers.has(currentChat._id)))
-    }
-  }, [currentChat,onlineUsers]);
-
-  useEffect(() => {
     // Handle when a user comes online
     const handleUserOnline = ({ userId }) => {
       
-      dispatch(setOnlineUsers(prev => new Set(prev).add(userId)));
+      setOnlineUsers(prev => new Set(prev).add(userId));
     };
   
 
 
     // Handle when a user goes offline
     const handleUserOffline = ({ userId }) => {
-      dispatch(setOnlineUsers(prev => {
+      setOnlineUsers(prev => {
         const newSet = new Set(prev);
         newSet.delete(userId);
         return newSet;
-      }));
+      });
     };
 
     if (socket.current) {
