@@ -42,7 +42,10 @@ const ChatContainer = ({ socket, notifications, setNotifications, handleChatchan
   useEffect(() => {
     if (user && currentChat) {
       fetchMessage();
-      setIsUserOnline(onlineUsers.has(currentChat._id))
+      if(currentChat && onlineUsers.size >0){
+        setIsUserOnline(onlineUsers.has(currentChat._id));
+
+      }
     }
   }, [currentChat,onlineUsers]);
 
@@ -226,10 +229,13 @@ const ChatContainer = ({ socket, notifications, setNotifications, handleChatchan
 
   useEffect(() => {
     // Handle when a user comes online
-    const handleUserOnline = ({ userId }) => {
-      
-      setOnlineUsers(prev => new Set(prev).add(userId));
-    };
+     const handleUserOnline = ({ userId }) => {
+    setOnlineUsers((prev) => {
+      const newSet = new Set(prev);
+      newSet.add(userId);
+      return Array.from(newSet); // Convert Set to Array
+    });
+  }
   
 
 
